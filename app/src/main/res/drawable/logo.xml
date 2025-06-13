@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="50dp" android:viewportHeight="100" android:viewportWidth="100" android:width="50dp">
+    <group
+        android:name="animationGroup"
+        android:pivotX="50"
+        android:pivotY="50">
+        <path android:fillColor="#2D2D2D" android:pathData="M25.51,35.86L64.14,25.51A10,10 69.03,0 1,76.39 32.58L81.57,51.89A10,10 69.03,0 1,74.49 64.14L35.86,74.49A10,10 120.3,0 1,23.61 67.42L18.43,48.11A10,10 117.21,0 1,25.51 35.86z"/>
+
+        <path android:fillColor="#3B3B3B" android:pathData="M25.83,40.95L66.4,30.08A6,6 68.44,0 1,73.75 34.32L78.41,51.71A6,6 68.44,0 1,74.17 59.05L33.6,69.92A6,6 125.2,0 1,26.25 65.68L21.59,48.29A6,6 86.52,0 1,25.83 40.95z"/>
+
+        <path android:fillColor="#BBBBBB" android:pathData="M67.39,45.34m-5.8,1.55a6,6 119.04,1 1,11.59 -3.11a6,6 119.04,1 1,-11.59 3.11"/>
+    </group>
+</vector>
