@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Finapp</string>
+
+    <string name="expenses_bottom_title">Расходы</string>
+    <string name="expenses_top_title">Расходы сегодня</string>
+
+    <string name="income_bottom_title">Доходы</string>
+    <string name="income_top_title">Доходы сегодня</string>
+
+    <string name="account_bottom_title">Счет</string>
+    <string name="account_top_title">Мой счет</string>
+
+    <string name="tags_bottom_title">Статьи</string>
+    <string name="tags_top_title">Мои статьи</string>
+
+    <string name="settings_bottom_title">Настройки</string>
+    <string name="settings_top_title">Настройки</string>
+
 </resources>
