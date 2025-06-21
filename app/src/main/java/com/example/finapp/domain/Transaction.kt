@@ -1,15 +1,15 @@
 package com.example.finapp.domain
 
+import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 
 data class Transaction(
     val id: Long,
     val accountId: Long,
-    val categoryId: Long,
-    val amount: String,
+    val category: Category,
+    val amount: BigDecimal,
     val transactionDate: LocalDateTime,
-    val comment: String? = null,
+    val comment: String?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

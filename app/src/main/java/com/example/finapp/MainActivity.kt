@@ -8,16 +8,12 @@ import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import com.example.finapp.ui.home.HomeScreen
 import com.example.finapp.ui.theme.FinappTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,11 +23,15 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         initSplashScreen()
+        enableEdgeToEdge()
 
         setContent {
             FinappTheme {
                 val navController = rememberNavController()
-                HomeScreen(navController = navController)
+                HomeScreen(
+                    navController = navController,
+                    modifier = Modifier.safeDrawingPadding()
+                )
             }
         }
     }
