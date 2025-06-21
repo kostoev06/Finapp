@@ -3,6 +3,7 @@ package com.example.finapp.ui.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +42,8 @@ fun FinappListItem(
     modifier: Modifier = Modifier,
     leadingSymbols: String? = null,
     subtitle: String? = null,
-    trailingContent: (@Composable FinanceListItemTrailingScope.() -> Unit)? = null,
+    firstTrailingContent: (@Composable FinanceListItemTrailingScope.() -> Unit)? = null,
+    secondTrailingContent: (@Composable FinanceListItemTrailingScope.() -> Unit)? = null,
     trailingIcon: @Composable (RowScope.() -> Unit)? = null,
     height: Int = 70,
     green: Boolean = false,
@@ -86,10 +88,15 @@ fun FinappListItem(
 
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                with(titleScope) {
-                    trailingContent?.invoke(this)
+                Column (
+                    horizontalAlignment = Alignment.End
+                ) {
+                    with(titleScope) {
+                        firstTrailingContent?.invoke(this)
+                        secondTrailingContent?.invoke(this)
+                    }
                 }
-                if (trailingContent != null && trailingIcon != null) {
+                if ((firstTrailingContent != null || secondTrailingContent != null) && trailingIcon != null) {
                     Spacer(Modifier.width(16.dp))
                 }
                 trailingIcon?.invoke(this)
@@ -194,15 +201,15 @@ fun FinanceListItem_Preview() {
             leadingSymbols = "🏡",
             title = "Аренда квартиры",
 //            subtitle = "ЖК «Лазурный»",
-            trailingContent = { Text("100 000 ₽") },
+            firstTrailingContent = { Text("100 000 ₽") },
+            secondTrailingContent = { Text("22:51") },
             trailingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow_right_1),
                     contentDescription = null
                 )
             },
-            onClick = { },
-            green = false
+            onClick = { }
         )
     }
 }
