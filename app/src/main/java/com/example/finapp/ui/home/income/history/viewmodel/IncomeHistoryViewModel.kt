@@ -65,6 +65,7 @@ class IncomeHistoryViewModel : ViewModel() {
                         summary = IncomeHistorySumUiState(totalFormatted = "$transactionsSum ₽"),
                         items = data
                             .filter { transaction -> transaction.category.isIncome }
+                            .sortedByDescending { transaction ->  transaction.transactionDate }
                             .map { transaction -> transaction.toUiState() }
                             .toImmutableList()
                     )

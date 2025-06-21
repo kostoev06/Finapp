@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 @Immutable
 data class IncomeHistoryScreenUiState(
-    val startDate: LocalDate = LocalDate.now(),
+    val startDate: LocalDate = LocalDate.now().withDayOfMonth(1),
     val endDate: LocalDate = LocalDate.now(),
     val summary: IncomeHistorySumUiState = IncomeHistorySumUiState(),
     val items: ImmutableList<IncomeHistoryItemUiState> = persistentListOf()

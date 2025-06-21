@@ -62,6 +62,7 @@ class ExpensesHistoryViewModel : ViewModel() {
                         summary = ExpensesHistorySumUiState(totalFormatted = "$transactionsSum ₽"),
                         items = data
                             .filter { transaction -> !transaction.category.isIncome }
+                            .sortedByDescending { transaction ->  transaction.transactionDate }
                             .map { transaction -> transaction.toUiState() }.toImmutableList()
                     )
                 }
