@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.finapp.data.repository.TransactionsRepository
 import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 
+/**
+ * Фабрика для создания ExpensesViewModel с передачей зависимостей.
+ */
 class ExpensesViewModelFactory(
     private val transactionsRepository: TransactionsRepository = TransactionsRepositoryImpl()
 ) : ViewModelProvider.Factory {

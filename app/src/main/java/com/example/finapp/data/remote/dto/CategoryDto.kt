@@ -2,6 +2,9 @@ package com.example.finapp.data.remote.dto
 
 import com.example.finapp.domain.Category
 
+/**
+ * DTO для категории, получаемый из API.
+ */
 data class CategoryDto(
     val id: Long,
     val name: String,

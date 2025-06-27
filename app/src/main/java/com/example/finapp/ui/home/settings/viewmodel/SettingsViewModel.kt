@@ -6,6 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.finapp.ui.home.settings.component.SettingsScreenUiState
 
+/**
+ * ViewModel для экрана настроек.
+ */
 class SettingsViewModel : ViewModel() {
     private val _uiState = mutableStateOf(
         SettingsScreenUiState(isDarkThemeEnabled = false)

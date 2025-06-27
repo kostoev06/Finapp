@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+/**
+ * ViewModel для экрана истории доходов.
+ */
 class IncomeHistoryViewModel(
     private val transactionsRepository: TransactionsRepository
 ) : ViewModel() {

@@ -25,6 +25,10 @@ private interface RetrofitTransactionsRemoteDataApi {
     ): Response<List<TransactionResponse>>
 }
 
+
+/**
+ * Источник данных для работы с транзакциями из удалённого API.
+ */
 class RetrofitTransactionsRemoteDataSource: TransactionsRemoteDataSource {
 
     private val remoteApi = Retrofit.Builder()

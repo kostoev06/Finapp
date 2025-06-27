@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.finapp.data.repository.TransactionsRepository
 import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 
+/**
+ * Фабрика для создания IncomeViewModel с передачей зависимостей.
+ */
 class IncomeViewModelFactory(
     private val transactionsRepository: TransactionsRepository = TransactionsRepositoryImpl()
 ) : ViewModelProvider.Factory {

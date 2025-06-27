@@ -3,7 +3,9 @@ package com.example.finapp.ui.home.income.history.component
 import com.example.finapp.domain.Transaction
 import java.time.format.DateTimeFormatter
 
-
+/**
+ * UI-состояние элемента истории доходов.
+ */
 data class IncomeHistoryItemUiState(
     val title: String,
     val subtitle: String? = null,

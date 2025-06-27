@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.finapp.data.repository.CategoriesRepository
 import com.example.finapp.data.repository.impl.CategoriesRepositoryImpl
 
+/**
+ * Фабрика для создания TagsViewModel с передачей зависимостей.
+ */
 class TagsViewModelFactory(
     private val categoriesRepository: CategoriesRepository = CategoriesRepositoryImpl()
 ) : ViewModelProvider.Factory {

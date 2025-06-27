@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
+/**
+ * ViewModel для экрана расходов.
+ */
 class ExpensesViewModel(
     private val transactionsRepository: TransactionsRepository
 ) : ViewModel() {

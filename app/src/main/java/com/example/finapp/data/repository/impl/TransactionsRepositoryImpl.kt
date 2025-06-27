@@ -9,6 +9,9 @@ import com.example.finapp.data.repository.TransactionsRepository
 import com.example.finapp.domain.Transaction
 
 
+/**
+ * Репозиторий транзакций: предоставляет список транзакций бизнес-слою.
+ */
 class TransactionsRepositoryImpl(
     private val transactionsRemoteDataSource: TransactionsRemoteDataSource = RetrofitTransactionsRemoteDataSource()
 ) : TransactionsRepository {

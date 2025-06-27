@@ -7,6 +7,9 @@ import com.example.finapp.ui.home.account.component.AccountScreenUiState
 import com.example.finapp.ui.home.account.component.BalanceItemUiState
 import com.example.finapp.ui.home.account.component.CurrencyItemUiState
 
+/**
+ * ViewModel для экрана счета.
+ */
 class AccountViewModel : ViewModel() {
     private val mockBalance = BalanceItemUiState(
         totalFormatted = "-670 000 ₽"

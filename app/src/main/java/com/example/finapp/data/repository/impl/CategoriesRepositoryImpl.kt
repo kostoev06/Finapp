@@ -6,6 +6,10 @@ import com.example.finapp.data.remote.dto.toDomain
 import com.example.finapp.data.remote.retrofit.RetrofitCategoriesRemoteDataSource
 import com.example.finapp.data.repository.CategoriesRepository
 
+
+/**
+ * Репозиторий категорий: предоставляет список категорий бизнес-слою.
+ */
 class CategoriesRepositoryImpl(
     private val remote: CategoriesRemoteDataSource = RetrofitCategoriesRemoteDataSource()
 ) : CategoriesRepository {

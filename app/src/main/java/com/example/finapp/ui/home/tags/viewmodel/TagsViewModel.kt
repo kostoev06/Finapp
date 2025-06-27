@@ -18,6 +18,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel для экрана статей.
+ */
 class TagsViewModel(
     private val categoriesRepository: CategoriesRepository
 ) : ViewModel() {

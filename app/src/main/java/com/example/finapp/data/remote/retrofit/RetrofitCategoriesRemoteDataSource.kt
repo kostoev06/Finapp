@@ -19,6 +19,10 @@ private interface RetrofitCategoriesRemoteDataApi {
     suspend fun getAllCategories(): Response<List<CategoryDto>>
 }
 
+
+/**
+ * Источник данных для работы с категориями из удалённого API.
+ */
 class RetrofitCategoriesRemoteDataSource : CategoriesRemoteDataSource {
 
     private val remoteApi = Retrofit.Builder()

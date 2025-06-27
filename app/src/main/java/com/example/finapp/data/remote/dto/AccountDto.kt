@@ -3,6 +3,9 @@ package com.example.finapp.data.remote.dto
 import com.example.finapp.domain.Account
 import java.time.LocalDateTime
 
+/**
+ * DTO для полной информации об аккаунте, получаемой из API.
+ */
 data class AccountDto(
     val id: Long,
     val userId: Long,

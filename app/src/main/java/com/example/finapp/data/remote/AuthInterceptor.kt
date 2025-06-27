@@ -4,6 +4,10 @@ import okhttp3.Interceptor
 import okhttp3.Response as OkResponse
 import com.example.finapp.BuildConfig
 
+
+/**
+ * Interceptor для Retrofit: добавляет токен аутентификации ко всем запросам.
+ */
 class AuthInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): OkResponse {
         val req = chain.request()

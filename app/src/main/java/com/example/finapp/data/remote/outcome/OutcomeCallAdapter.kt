@@ -5,6 +5,9 @@ import retrofit2.Call
 import retrofit2.CallAdapter
 import java.lang.reflect.Type
 
+/**
+ * Адаптер для Retrofit, превращающий Call<T> в OutcomeCall<T>.
+ */
 class OutcomeCallAdapter(
     private val type: Type
 ) : CallAdapter<Type, Call<Outcome<Type>>> {

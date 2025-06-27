@@ -5,6 +5,9 @@ import androidx.annotation.StringRes
 import com.example.finapp.R
 import kotlinx.serialization.Serializable
 
+/**
+ * Навигационный объект-назначение для главного экрана.
+ */
 @Serializable
 sealed class HomeNavigationDestination(
     @StringRes val titleId: Int,
