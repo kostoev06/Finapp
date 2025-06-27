@@ -7,6 +7,9 @@ import retrofit2.Retrofit
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
+/**
+ * Factory для OutcomeCallAdapter (пока не используется).
+ */
 class OutcomeCallAdapterFactory private constructor() : CallAdapter.Factory() {
     override fun get(
         returnType: Type,

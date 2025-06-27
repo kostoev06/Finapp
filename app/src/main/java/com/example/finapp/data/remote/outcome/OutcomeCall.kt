@@ -7,6 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Обёртка для Retrofit Call, возвращает Outcome вместо обычного Response.
+ */
 class OutcomeCall<T>(
     private val proxy: Call<T>
 ) : Call<Outcome<T>> {

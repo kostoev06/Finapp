@@ -1,4 +1,4 @@
-package com.example.finapp.ui.home.income.history.view
+package com.example.finapp.ui.home.income.history.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,16 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finapp.R
+import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 import com.example.finapp.ui.common.FinappDatePicker
 import com.example.finapp.ui.home.common.HomeTopBar
 import com.example.finapp.ui.home.income.history.viewmodel.IncomeHistoryViewModel
 import com.example.finapp.ui.common.FinappListItem
+import com.example.finapp.ui.home.income.history.viewmodel.IncomeHistoryViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun IncomeHistoryRoute(
-    viewModel: IncomeHistoryViewModel = viewModel(),
+    viewModel: IncomeHistoryViewModel = viewModel(factory = IncomeHistoryViewModelFactory()),
     onClickBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -2,6 +2,9 @@ package com.example.finapp.ui.home.expenses.component
 
 import com.example.finapp.domain.Transaction
 
+/**
+ * UI-состояние элемента расхода.
+ */
 data class ExpensesItemUiState(
     val leadingSymbols: String? = null,
     val title: String,

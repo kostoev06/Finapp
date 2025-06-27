@@ -1,5 +1,8 @@
 package com.example.finapp.data.common
 
+/**
+ * Обертка для ответов из API.
+ */
 sealed interface Outcome<out T> {
     data class Success<T>(val data: T) : Outcome<T>
 

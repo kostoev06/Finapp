@@ -5,6 +5,10 @@ import com.example.finapp.domain.Transaction
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
+/**
+ * DTO для ответа транзакций из API.
+ */
 data class TransactionResponse(
     val id: Long,
     val account: AccountBriefDto,

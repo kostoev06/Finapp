@@ -63,7 +63,12 @@ fun AccountContent(
                 leadingSymbols = "💰",
                 title = "Баланс",
                 firstTrailingContent = { Text(state.balance.totalFormatted) },
-                trailingIcon = { Icon(painter = painterResource(R.drawable.ic_arrow_right_1), contentDescription = null) },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow_right_1),
+                        contentDescription = null
+                    )
+                },
                 green = true,
                 clickable = true,
                 height = 56,
@@ -72,7 +77,12 @@ fun AccountContent(
             FinappListItem(
                 title = "Валюта",
                 firstTrailingContent = { Text(state.currency.currency) },
-                trailingIcon = { Icon(painter = painterResource(R.drawable.ic_arrow_right_1), contentDescription = null) },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow_right_1),
+                        contentDescription = null
+                    )
+                },
                 green = true,
                 clickable = true,
                 height = 56,

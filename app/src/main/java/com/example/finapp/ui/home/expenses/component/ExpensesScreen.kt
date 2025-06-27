@@ -17,14 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.example.finapp.ui.home.common.HomeTopBar
 import com.example.finapp.R
+import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 import com.example.finapp.ui.home.expenses.viewmodel.ExpensesViewModel
 import com.example.finapp.ui.common.FinappFAB
 import com.example.finapp.ui.common.FinappListItem
+import com.example.finapp.ui.home.expenses.viewmodel.ExpensesViewModelFactory
 
 
 @Composable
 fun ExpensesRoute(
-    viewModel: ExpensesViewModel = viewModel(),
+    viewModel: ExpensesViewModel = viewModel(factory = ExpensesViewModelFactory()),
     modifier: Modifier = Modifier,
     onClickHistory: () -> Unit
 ) {
