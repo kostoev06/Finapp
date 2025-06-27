@@ -1,4 +1,4 @@
-package com.example.finapp.ui.home.income.history.view
+package com.example.finapp.ui.home.income.history.component
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList

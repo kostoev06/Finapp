@@ -19,15 +19,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import com.example.finapp.R
+import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 import com.example.finapp.ui.common.FinappDatePicker
 import com.example.finapp.ui.home.common.HomeTopBar
 import com.example.finapp.ui.common.FinappListItem
+import com.example.finapp.ui.home.expenses.history.viewmodel.ExpensesHistoryViewModelFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun ExpensesHistoryRoute(
-    viewModel: ExpensesHistoryViewModel = viewModel(),
+    viewModel: ExpensesHistoryViewModel = viewModel(factory = ExpensesHistoryViewModelFactory()),
     onClickBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -78,7 +80,7 @@ fun ExpensesHistoryScreen(
         state = state,
         onClickBack = onClickBack,
         onClickStartDate = { showStartPicker = true },
-        onClickEndDate   = { showEndPicker   = true },
+        onClickEndDate = { showEndPicker = true },
         modifier = modifier
     )
 }
@@ -154,4 +156,3 @@ fun ExpensesHistoryContent(
         }
     }
 }
-

@@ -7,7 +7,7 @@ import com.example.finapp.ui.home.expenses.component.ExpensesRoute
 import com.example.finapp.ui.home.expenses.history.component.ExpensesHistoryRoute
 import com.example.finapp.ui.home.navigation.HomeNavigationDestination
 
-inline fun <reified T: HomeNavigationDestination> NavGraphBuilder.expensesNavigation(
+inline fun <reified T : HomeNavigationDestination> NavGraphBuilder.expensesNavigation(
     navController: NavController
 ) {
     composable<ExpensesNavigationDestination.ExpensesHistory> {

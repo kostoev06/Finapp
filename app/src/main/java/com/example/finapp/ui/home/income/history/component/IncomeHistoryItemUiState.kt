@@ -1,4 +1,4 @@
-package com.example.finapp.ui.home.income.history.view
+package com.example.finapp.ui.home.income.history.component
 
 import com.example.finapp.domain.Transaction
 import java.time.format.DateTimeFormatter

@@ -19,11 +19,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import com.example.finapp.R
+import com.example.finapp.data.repository.impl.TransactionsRepositoryImpl
 import com.example.finapp.ui.common.FinappListItem
+import com.example.finapp.ui.home.income.viewmodel.IncomeViewModelFactory
 
 @Composable
 fun IncomeRoute(
-    viewModel: IncomeViewModel = viewModel(),
+    viewModel: IncomeViewModel = viewModel(factory = IncomeViewModelFactory()),
     onClickHistory: () -> Unit,
     modifier: Modifier = Modifier
 ) {

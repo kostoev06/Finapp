@@ -24,12 +24,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.finapp.R
+import com.example.finapp.data.repository.impl.CategoriesRepositoryImpl
 import com.example.finapp.ui.home.common.HomeTopBar
 import com.example.finapp.ui.common.FinappListItem
+import com.example.finapp.ui.home.tags.viewmodel.TagsViewModelFactory
 
 @Composable
 fun TagsRoute(
-    viewModel: TagsViewModel = viewModel(),
+    viewModel: TagsViewModel = viewModel(factory = TagsViewModelFactory()),
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()

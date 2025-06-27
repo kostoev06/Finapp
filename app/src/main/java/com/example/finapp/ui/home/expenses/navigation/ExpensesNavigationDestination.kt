@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class ExpensesNavigationDestination {
     @Serializable
-    data object ExpensesHistory: ExpensesNavigationDestination()
+    data object ExpensesHistory : ExpensesNavigationDestination()
 }

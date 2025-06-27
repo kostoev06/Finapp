@@ -16,8 +16,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class ExpensesHistoryViewModel : ViewModel() {
-    private val transactionsRepository: TransactionsRepository = TransactionsRepositoryImpl()
+class ExpensesHistoryViewModel(
+    private val transactionsRepository: TransactionsRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExpensesHistoryScreenUiState())
     val uiState: StateFlow<ExpensesHistoryScreenUiState> = _uiState.asStateFlow()
@@ -62,7 +63,7 @@ class ExpensesHistoryViewModel : ViewModel() {
                         summary = ExpensesHistorySumUiState(totalFormatted = "$transactionsSum ₽"),
                         items = data
                             .filter { transaction -> !transaction.category.isIncome }
-                            .sortedByDescending { transaction ->  transaction.transactionDate }
+                            .sortedByDescending { transaction -> transaction.transactionDate }
                             .map { transaction -> transaction.toUiState() }.toImmutableList()
                     )
                 }

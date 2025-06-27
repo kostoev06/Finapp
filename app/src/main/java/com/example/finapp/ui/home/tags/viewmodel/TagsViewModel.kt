@@ -18,8 +18,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TagsViewModel : ViewModel() {
-    private val categoriesRepository: CategoriesRepository = CategoriesRepositoryImpl()
+class TagsViewModel(
+    private val categoriesRepository: CategoriesRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TagsScreenUiState())
     val uiState: StateFlow<TagsScreenUiState> = _uiState.asStateFlow()
