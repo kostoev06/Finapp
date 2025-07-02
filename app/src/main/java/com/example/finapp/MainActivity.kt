@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.example.finapp.ui.home.HomeScreen
+import com.example.finapp.ui.feature.home.HomeScreen
 import com.example.finapp.ui.theme.FinappTheme
 
 class MainActivity : ComponentActivity() {

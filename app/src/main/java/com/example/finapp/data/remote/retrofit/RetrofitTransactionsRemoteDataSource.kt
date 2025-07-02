@@ -5,6 +5,7 @@ import com.example.finapp.data.remote.AuthInterceptor
 import com.example.finapp.data.remote.Backend
 import com.example.finapp.data.remote.TransactionsRemoteDataSource
 import com.example.finapp.data.remote.dto.TransactionResponse
+import com.example.finapp.data.remote.outcome.OutcomeCallAdapterFactory
 import com.example.finapp.data.remote.outcome.asRemoteResult
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -22,14 +23,14 @@ private interface RetrofitTransactionsRemoteDataApi {
         @Path("accountId") accountId: Long,
         @Query("startDate") start: String? = null,
         @Query("endDate") end: String? = null
-    ): Response<List<TransactionResponse>>
+    ): Outcome<List<TransactionResponse>>
 }
 
 
 /**
  * Источник данных для работы с транзакциями из удалённого API.
  */
-class RetrofitTransactionsRemoteDataSource: TransactionsRemoteDataSource {
+class RetrofitTransactionsRemoteDataSource : TransactionsRemoteDataSource {
 
     private val remoteApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -39,6 +40,7 @@ class RetrofitTransactionsRemoteDataSource: TransactionsRemoteDataSource {
                 .build()
         )
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(OutcomeCallAdapterFactory.create())
         .build()
         .create(RetrofitTransactionsRemoteDataApi::class.java)
 
@@ -46,13 +48,7 @@ class RetrofitTransactionsRemoteDataSource: TransactionsRemoteDataSource {
         accountId: Long,
         startDate: String?,
         endDate: String?
-    ): Outcome<List<TransactionResponse>> {
-        return try {
-            remoteApi.getTransactionsByPeriod(accountId, startDate, endDate)
-                .asRemoteResult()
-        } catch (t: Throwable) {
-            Outcome.Exception(t)
-        }
-    }
+    ): Outcome<List<TransactionResponse>> =
+        remoteApi.getTransactionsByPeriod(accountId, startDate, endDate)
 
 }
