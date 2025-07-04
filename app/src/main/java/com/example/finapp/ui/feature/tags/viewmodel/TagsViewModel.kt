@@ -31,7 +31,7 @@ class TagsViewModel(
 
     init {
         viewModelScope.launch {
-            categoriesRepository.getAllCategories().handleOutcome {
+            categoriesRepository.getCategories().handleOutcome {
                 onSuccess {
                     val uiList = data
                         .map { dto -> dto.asTagsItemUiState() }

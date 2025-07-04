@@ -6,9 +6,7 @@ import com.example.finapp.data.remote.Backend
 import com.example.finapp.data.remote.CategoriesRemoteDataSource
 import com.example.finapp.data.remote.dto.CategoryDto
 import com.example.finapp.data.remote.outcome.OutcomeCallAdapterFactory
-import com.example.finapp.data.remote.outcome.asRemoteResult
 import okhttp3.OkHttpClient
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -17,7 +15,7 @@ private const val BASE_URL = Backend.SWAGGER_URL
 
 private interface RetrofitCategoriesRemoteDataApi {
     @GET("categories")
-    suspend fun getAllCategories(): Outcome<List<CategoryDto>>
+    suspend fun fetchCategories(): Outcome<List<CategoryDto>>
 }
 
 
@@ -38,7 +36,7 @@ class RetrofitCategoriesRemoteDataSource : CategoriesRemoteDataSource {
         .build()
         .create(RetrofitCategoriesRemoteDataApi::class.java)
 
-    override suspend fun fetchAllCategories(): Outcome<List<CategoryDto>> =
-        remoteApi.getAllCategories()
+    override suspend fun fetchCategories(): Outcome<List<CategoryDto>> =
+        remoteApi.fetchCategories()
 
 }

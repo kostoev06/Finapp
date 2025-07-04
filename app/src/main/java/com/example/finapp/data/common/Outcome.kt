@@ -7,7 +7,7 @@ sealed interface Outcome<out T> {
     data class Success<T>(val data: T) : Outcome<T>
 
     sealed interface FailureOutcome : Outcome<Nothing>
-    data class Error(val code: Int) : FailureOutcome
+    data class Error(val code: Int, val errorBody: String?) : FailureOutcome
     data class Exception(val exception: Throwable) : FailureOutcome
 }
 

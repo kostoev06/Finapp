@@ -16,4 +16,5 @@
     <string name="settings_bottom_title">Настройки</string>
     <string name="settings_top_title">Настройки</string>
 
+    <string name="amount_with_currency">%1$s %2$s</string>
 </resources>

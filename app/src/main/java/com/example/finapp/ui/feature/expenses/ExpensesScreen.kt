@@ -22,6 +22,7 @@ import com.example.finapp.ui.feature.expenses.viewmodel.ExpensesViewModel
 import com.example.finapp.ui.common.FinappFAB
 import com.example.finapp.ui.common.FinappListItem
 import com.example.finapp.ui.feature.expenses.viewmodel.ExpensesViewModelFactory
+import com.example.finapp.ui.utils.currencySymbol
 
 
 @Composable
@@ -78,7 +79,15 @@ fun ExpensesContent(
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
                 title = "Всего",
-                firstTrailingContent = { Text(state.summary.totalFormatted) },
+                firstTrailingContent = {
+                    Text(
+                        stringResource(
+                            R.string.amount_with_currency,
+                            state.summary.totalAmount,
+                            currencySymbol(state.currency)
+                        )
+                    )
+                },
                 green = true,
                 height = 56
             )
@@ -89,7 +98,15 @@ fun ExpensesContent(
                         leadingSymbols = item.leadingSymbols,
                         title = item.title,
                         subtitle = item.subtitle,
-                        firstTrailingContent = { Text(item.amountFormatted) },
+                        firstTrailingContent = {
+                            Text(
+                                stringResource(
+                                    R.string.amount_with_currency,
+                                    item.amount,
+                                    currencySymbol(state.currency)
+                                )
+                            )
+                        },
                         trailingIcon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_right_1),

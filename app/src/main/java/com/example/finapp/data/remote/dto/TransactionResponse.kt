@@ -37,11 +37,11 @@ fun TransactionResponse.toDomain(): Transaction =
         ),
         comment = comment,
         createdAt = LocalDateTime.parse(
-            transactionDate,
+            createdAt,
             DateTimeFormatter.ISO_OFFSET_DATE_TIME
         ),
         updatedAt = LocalDateTime.parse(
-            transactionDate,
+            updatedAt,
             DateTimeFormatter.ISO_OFFSET_DATE_TIME
         )
     )

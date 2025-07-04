@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.finapp.R
 import com.example.finapp.ui.common.FinappListItem
 import com.example.finapp.ui.feature.income.viewmodel.IncomeViewModelFactory
+import com.example.finapp.ui.utils.currencySymbol
 
 @Composable
 fun IncomeRoute(
@@ -77,7 +78,15 @@ fun IncomeContent(
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
                 title = "Всего",
-                firstTrailingContent = { Text(state.summary.totalFormatted) },
+                firstTrailingContent = {
+                    Text(
+                        stringResource(
+                            R.string.amount_with_currency,
+                            state.summary.totalAmount,
+                            currencySymbol(state.currency)
+                        )
+                    )
+                },
                 green = true,
                 height = 56
             )
@@ -86,7 +95,15 @@ fun IncomeContent(
                 items(state.items) { item ->
                     FinappListItem(
                         title = item.title,
-                        firstTrailingContent = { Text(item.amountFormatted) },
+                        firstTrailingContent = {
+                            Text(
+                                stringResource(
+                                    R.string.amount_with_currency,
+                                    item.amount,
+                                    currencySymbol(state.currency)
+                                )
+                            )
+                        },
                         trailingIcon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_right_1),
