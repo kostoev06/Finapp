@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finapp.R
 import com.example.finapp.ui.common.FinappDatePicker
@@ -23,6 +24,7 @@ import com.example.finapp.ui.common.HomeTopBar
 import com.example.finapp.ui.feature.income.history.viewmodel.IncomeHistoryViewModel
 import com.example.finapp.ui.common.FinappListItem
 import com.example.finapp.ui.feature.income.history.viewmodel.IncomeHistoryViewModelFactory
+import com.example.finapp.ui.utils.currencySymbol
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -138,7 +140,15 @@ fun IncomeHistoryContent(
             )
             FinappListItem(
                 title = "Сумма",
-                firstTrailingContent = { Text(state.summary.totalFormatted) },
+                firstTrailingContent = {
+                    Text(
+                        stringResource(
+                            R.string.amount_with_currency,
+                            state.summary.totalAmount,
+                            currencySymbol(state.currency)
+                        )
+                    )
+                },
                 green = true,
                 height = 56
             )
@@ -148,7 +158,15 @@ fun IncomeHistoryContent(
                     FinappListItem(
                         title = item.title,
                         subtitle = item.subtitle,
-                        firstTrailingContent = { Text(item.amountFormatted) },
+                        firstTrailingContent = {
+                            Text(
+                                stringResource(
+                                    R.string.amount_with_currency,
+                                    item.amount,
+                                    currencySymbol(state.currency)
+                                )
+                            )
+                        },
                         secondTrailingContent = { Text(item.timeText) },
                         trailingIcon = {
                             Icon(

@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
  */
 data class IncomeItemUiState(
     val title: String,
-    val amountFormatted: String
+    val amount: String
 )
 
 /**
@@ -16,12 +16,13 @@ data class IncomeItemUiState(
  */
 data class IncomeScreenUiState(
     val summary: IncomeSumUiState = IncomeSumUiState(),
-    val items: ImmutableList<IncomeItemUiState> = persistentListOf()
+    val items: ImmutableList<IncomeItemUiState> = persistentListOf(),
+    val currency: String = "RUB"
 )
 
 /**
  * UI-состояние элемента суммы доходов.
  */
 data class IncomeSumUiState(
-    val totalFormatted: String = "0 ₽"
+    val totalAmount: String = "0"
 )

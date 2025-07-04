@@ -82,10 +82,8 @@ fun FinappListItem(
                 }
             }
         } else null,
-
         headlineContent = { Text(title) },
         supportingContent = if (subtitle != null) { { Text(subtitle) } } else null,
-
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column (
@@ -102,13 +100,11 @@ fun FinappListItem(
                 trailingIcon?.invoke(this)
             }
         },
-
         colors = if (green) {
             ListItemDefaults.colors(containerColor = GreenPrimaryLight)
         } else {
             ListItemDefaults.colors()
         }
-
     )
     HorizontalDivider()
 }

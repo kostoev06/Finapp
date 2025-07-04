@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.finapp.ui.feature.account.AccountRoute
+import com.example.finapp.ui.feature.account.navigation.accountNavigation
 import com.example.finapp.ui.feature.expenses.navigation.expensesNavigation
 import com.example.finapp.ui.feature.income.navigation.incomeNavigation
 import com.example.finapp.ui.feature.settings.SettingsRoute
@@ -25,9 +26,7 @@ fun HomeNavigationGraph(
 
         incomeNavigation<HomeNavigationDestination.Income>(navController)
 
-        composable<HomeNavigationDestination.Account> {
-            AccountRoute()
-        }
+        accountNavigation<HomeNavigationDestination.Account>(navController)
 
         composable<HomeNavigationDestination.Tags> {
             TagsRoute()

@@ -13,22 +13,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.finapp.ui.feature.home.navigation.HomeNavigationDestination
 import com.example.finapp.ui.feature.home.navigation.HomeNavigationGraph
+import com.example.finapp.ui.feature.home.viewmodel.HomeViewModel
+import com.example.finapp.ui.feature.home.viewmodel.HomeViewModelFactory
 import com.example.finapp.ui.theme.GreenPrimary
 import com.example.finapp.ui.theme.GreenPrimaryLight
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory()),
     modifier: Modifier = Modifier
 ) {
+    val destinations =
+        HomeNavigationDestination.destinations.map { it::class.java.kotlin.qualifiedName }
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination?.route
+
     Scaffold(
-        bottomBar = { HomeBottomNavBar(navController) },
+        bottomBar = {
+            if (currentDestination in destinations) {
+                HomeBottomNavBar(navController)
+            }
+        },
         modifier = modifier
     ) { innerPadding ->
         HomeNavigationGraph(

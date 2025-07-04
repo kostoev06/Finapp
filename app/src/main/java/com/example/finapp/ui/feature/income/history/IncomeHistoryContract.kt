@@ -11,7 +11,7 @@ import java.time.LocalDate
 data class IncomeHistoryItemUiState(
     val title: String,
     val subtitle: String? = null,
-    val amountFormatted: String,
+    val amount: String,
     val timeText: String
 )
 
@@ -23,12 +23,13 @@ data class IncomeHistoryScreenUiState(
     val startDate: LocalDate = LocalDate.now().withDayOfMonth(1),
     val endDate: LocalDate = LocalDate.now(),
     val summary: IncomeHistorySumUiState = IncomeHistorySumUiState(),
-    val items: ImmutableList<IncomeHistoryItemUiState> = persistentListOf()
+    val items: ImmutableList<IncomeHistoryItemUiState> = persistentListOf(),
+    val currency: String = "RUB"
 )
 
 /**
  * UI-состояние элемента суммы доходов из истории.
  */
 data class IncomeHistorySumUiState(
-    val totalFormatted: String = "0 ₽"
+    val totalAmount: String = "0"
 )

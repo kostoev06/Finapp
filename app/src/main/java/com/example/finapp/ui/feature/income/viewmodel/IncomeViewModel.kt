@@ -3,10 +3,12 @@ package com.example.finapp.ui.feature.income.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finapp.data.common.handleOutcome
+import com.example.finapp.data.repository.CurrencyRepository
 import com.example.finapp.data.repository.TransactionsRepository
 import com.example.finapp.ui.feature.income.IncomeScreenUiState
 import com.example.finapp.ui.feature.income.IncomeSumUiState
 import com.example.finapp.ui.feature.income.asIncomeItemUiState
+import com.example.finapp.ui.utils.toFormattedString
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,13 +21,24 @@ import java.time.LocalDate
  * ViewModel для экрана доходов.
  */
 class IncomeViewModel(
-    private val transactionsRepository: TransactionsRepository
+    private val transactionsRepository: TransactionsRepository,
+    private val currencyRepository: CurrencyRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(IncomeScreenUiState())
     val uiState: StateFlow<IncomeScreenUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            currencyRepository.currency.collect { currency ->
+                _uiState.update {
+                    it.copy(
+                        currency = currency
+                    )
+                }
+            }
+        }
+
         viewModelScope.launch {
             val today = LocalDate.now().toString()
 
@@ -35,11 +48,10 @@ class IncomeViewModel(
                         val transactionsSum = data
                             .filter { transaction -> transaction.category.isIncome }
                             .sumOf { it.amount }
-                            .stripTrailingZeros()
-                            .toPlainString()
+                            .toFormattedString()
                         _uiState.update {
                             it.copy(
-                                summary = IncomeSumUiState(totalFormatted = "$transactionsSum ₽"),
+                                summary = IncomeSumUiState(totalAmount = transactionsSum),
                                 items = data
                                     .filter { transaction -> transaction.category.isIncome }
                                     .map { transaction -> transaction.asIncomeItemUiState() }

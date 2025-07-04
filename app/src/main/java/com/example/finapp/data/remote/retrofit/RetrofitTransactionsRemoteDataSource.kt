@@ -6,9 +6,7 @@ import com.example.finapp.data.remote.Backend
 import com.example.finapp.data.remote.TransactionsRemoteDataSource
 import com.example.finapp.data.remote.dto.TransactionResponse
 import com.example.finapp.data.remote.outcome.OutcomeCallAdapterFactory
-import com.example.finapp.data.remote.outcome.asRemoteResult
 import okhttp3.OkHttpClient
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -19,7 +17,7 @@ private const val BASE_URL = Backend.SWAGGER_URL
 
 private interface RetrofitTransactionsRemoteDataApi {
     @GET("transactions/account/{accountId}/period")
-    suspend fun getTransactionsByPeriod(
+    suspend fun fetchTransactionsByPeriod(
         @Path("accountId") accountId: Long,
         @Query("startDate") start: String? = null,
         @Query("endDate") end: String? = null
@@ -44,11 +42,11 @@ class RetrofitTransactionsRemoteDataSource : TransactionsRemoteDataSource {
         .build()
         .create(RetrofitTransactionsRemoteDataApi::class.java)
 
-    override suspend fun getTransactionsByPeriod(
+    override suspend fun fetchTransactionsByPeriod(
         accountId: Long,
         startDate: String?,
         endDate: String?
     ): Outcome<List<TransactionResponse>> =
-        remoteApi.getTransactionsByPeriod(accountId, startDate, endDate)
+        remoteApi.fetchTransactionsByPeriod(accountId, startDate, endDate)
 
 }

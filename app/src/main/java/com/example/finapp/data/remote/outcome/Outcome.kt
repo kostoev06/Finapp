@@ -8,6 +8,14 @@ fun <T> Response<T>.asRemoteResult(): Outcome<T> {
     return if (isSuccessful && body != null) {
         Outcome.Success(body)
     } else {
-        Outcome.Error(code())
+        val errorText = try {
+            errorBody()?.string()
+        } catch (e: Exception) {
+            null
+        }
+        Outcome.Error(
+            code = code(),
+            errorBody = errorText
+        )
     }
 }

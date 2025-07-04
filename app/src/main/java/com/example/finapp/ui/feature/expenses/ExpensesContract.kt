@@ -10,7 +10,7 @@ data class ExpensesItemUiState(
     val leadingSymbols: String? = null,
     val title: String,
     val subtitle: String? = null,
-    val amountFormatted: String
+    val amount: String
 )
 
 /**
@@ -18,12 +18,13 @@ data class ExpensesItemUiState(
  */
 data class ExpensesScreenUiState(
     val summary: ExpensesSumUiState = ExpensesSumUiState(),
-    val items: ImmutableList<ExpensesItemUiState> = persistentListOf()
+    val items: ImmutableList<ExpensesItemUiState> = persistentListOf(),
+    val currency: String = "RUB"
 )
 
 /**
  * UI-состояние элемента суммы расходов.
  */
 data class ExpensesSumUiState(
-    val totalFormatted: String = "0 ₽"
+    val totalAmount: String = "0"
 )

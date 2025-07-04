@@ -8,13 +8,13 @@ import com.example.finapp.data.repository.CategoriesRepository
 
 
 /**
- * Репозиторий категорий: предоставляет список категорий бизнес-слою.
+ * Репозиторий категорий.
  */
 class CategoriesRepositoryImpl(
-    private val remote: CategoriesRemoteDataSource = RetrofitCategoriesRemoteDataSource()
+    private val categoriesRemoteDataSource: CategoriesRemoteDataSource = RetrofitCategoriesRemoteDataSource()
 ) : CategoriesRepository {
-    override suspend fun getAllCategories() =
-        remote.fetchAllCategories()
+    override suspend fun getCategories() =
+        categoriesRemoteDataSource.fetchCategories()
             .transform { dtoList ->
                 dtoList.map { it.toDomain() }
             }
