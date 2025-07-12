@@ -8,7 +8,6 @@ import com.finapp.core.data.impl.BuildConfig
 import com.finapp.core.data.impl.model.asAccount
 import com.finapp.core.remote.api.model.AccountUpdateRequest
 import com.finapp.core.remote.api.source.AccountRemoteSource
-import com.finapp.core.remote.impl.source.RetrofitAccountRemoteSource
 import jakarta.inject.Inject
 import javax.inject.Singleton
 

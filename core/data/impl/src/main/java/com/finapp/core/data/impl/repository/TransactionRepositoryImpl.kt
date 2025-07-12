@@ -10,7 +10,6 @@ import com.finapp.core.data.impl.model.asTransaction
 import com.finapp.core.data.impl.model.asTransactionBrief
 import com.finapp.core.remote.api.model.TransactionRequest
 import com.finapp.core.remote.api.source.TransactionRemoteSource
-import com.finapp.core.remote.impl.source.RetrofitTransactionRemoteSource
 import jakarta.inject.Inject
 import javax.inject.Singleton
 

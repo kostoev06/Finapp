@@ -6,7 +6,6 @@ import com.finapp.core.data.api.model.Category
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.impl.model.asCategory
 import com.finapp.core.remote.api.source.CategoryRemoteSource
-import com.finapp.core.remote.impl.source.RetrofitCategoryRemoteSource
 import jakarta.inject.Inject
 import javax.inject.Singleton
 
