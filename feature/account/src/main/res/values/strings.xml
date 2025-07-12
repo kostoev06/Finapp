@@ -1,0 +1,11 @@
+<resources>
+    <string name="account_top_title">Мой счет</string>
+    <string name="amount_with_currency">%1$s %2$s</string>
+    <string name="currency_name_rub">Российский рубль ₽</string>
+    <string name="currency_name_usd">Американский доллар $</string>
+    <string name="currency_name_eur">Евро €</string>
+    <string name="cancel">Отмена</string>
+    <string name="title">Название</string>
+    <string name="balance">Баланс</string>
+    <string name="currency">Валюта</string>
+</resources>

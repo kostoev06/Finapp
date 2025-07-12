@@ -21,3 +21,15 @@ dependencyResolutionManagement {
 
 rootProject.name = "Finapp"
 include(":app")
+include(":core:common")
+include(":core:remote:api")
+include(":core:remote:impl")
+include(":core:data:api")
+include(":core:data:impl")
+include(":feature:common")
+include(":feature:home")
+include(":feature:expenses")
+include(":feature:income")
+include(":feature:account")
+include(":feature:tags")
+include(":feature:settings")
