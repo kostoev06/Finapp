@@ -19,7 +19,7 @@ fun HomeNavigationGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = HomeNavigationDestination.Account //replace to Expenses
+        startDestination = HomeNavigationDestination.Expenses
     ) {
         expensesNavigation<HomeNavigationDestination.Expenses>(navController)
 
