@@ -1,0 +1,7 @@
+<resources>
+    <string name="expenses_bottom_title">Расходы</string>
+    <string name="income_bottom_title">Доходы</string>
+    <string name="account_bottom_title">Счет</string>
+    <string name="tags_bottom_title">Статьи</string>
+    <string name="settings_bottom_title">Настройки</string>
+</resources>
