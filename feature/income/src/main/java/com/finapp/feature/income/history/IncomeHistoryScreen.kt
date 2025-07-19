@@ -35,6 +35,7 @@ fun IncomeHistoryRoute(
     viewModel: IncomeHistoryViewModel = viewModel(),
     onClickBack: () -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -59,6 +60,7 @@ fun IncomeHistoryRoute(
         onChooseStartDate = viewModel::onChooseStartDate,
         onChooseEndDate = viewModel::onChooseEndDate,
         onEditIncome = onEditIncome,
+        onAnalysis = onAnalysis,
         modifier = modifier
     )
 }
@@ -70,6 +72,7 @@ fun IncomeHistoryScreen(
     onChooseStartDate: (LocalDate) -> Unit,
     onChooseEndDate: (LocalDate) -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showStartPicker by remember { mutableStateOf(false) }
@@ -101,6 +104,7 @@ fun IncomeHistoryScreen(
         onClickStartDate = { showStartPicker = true },
         onClickEndDate = { showEndPicker = true },
         onEditIncome = onEditIncome,
+        onAnalysis = onAnalysis,
         modifier = modifier
     )
 }
@@ -112,14 +116,23 @@ fun IncomeHistoryContent(
     onClickStartDate: () -> Unit,
     onClickEndDate: () -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var backButtonEnabled by remember { mutableStateOf(true) }
+
     Scaffold(
         topBar = {
             FinappTopAppBar(
                 title = { Text("Моя история") },
                 navigationIcon = {
-                    IconButton(onClick = { onClickBack() }) {
+                    IconButton(
+                        onClick = {
+                            onClickBack()
+                            backButtonEnabled = false
+                        },
+                        enabled = backButtonEnabled
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_back),
                             contentDescription = null
@@ -127,7 +140,7 @@ fun IncomeHistoryContent(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = { onAnalysis() }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_analysis),
                             contentDescription = null

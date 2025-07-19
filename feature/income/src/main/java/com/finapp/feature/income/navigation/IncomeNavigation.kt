@@ -5,7 +5,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.finapp.feature.income.IncomeRoute
+import com.finapp.feature.income.analysis.IncomeAnalysisRoute
+import com.finapp.feature.income.homepage.IncomeRoute
 import com.finapp.feature.income.di.LocalFeatureIncomeComponentBuilder
 import com.finapp.feature.income.edit.IncomeEditRoute
 import com.finapp.feature.income.history.IncomeHistoryRoute
@@ -25,7 +26,17 @@ inline fun <reified T : Any> NavGraphBuilder.incomeNavigation(
                         id
                     )
                 )
-            })
+            },
+            onAnalysis = { navController.navigate(IncomeNavigationDestination.IncomeAnalysis) }
+        )
+    }
+    composable<IncomeNavigationDestination.IncomeAnalysis> {
+        val incomeComponentBuilder = LocalFeatureIncomeComponentBuilder.current
+        val incomeComponent = remember { incomeComponentBuilder.build() }
+        IncomeAnalysisRoute(
+            viewModel = viewModel(factory = incomeComponent.viewModelFactory()),
+            onClickBack = { navController.popBackStack() },
+        )
     }
     composable<IncomeNavigationDestination.EditIncome> {
         val incomeComponentBuilder = LocalFeatureIncomeComponentBuilder.current

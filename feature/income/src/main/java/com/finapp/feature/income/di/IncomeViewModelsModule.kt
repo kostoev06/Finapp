@@ -3,7 +3,8 @@ package com.finapp.feature.income.di
 import androidx.lifecycle.ViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
-import com.finapp.feature.income.IncomeViewModel
+import com.finapp.feature.income.analysis.IncomeAnalysisViewModel
+import com.finapp.feature.income.homepage.IncomeViewModel
 import com.finapp.feature.income.edit.IncomeEditViewModel
 import com.finapp.feature.income.history.IncomeHistoryViewModel
 import dagger.Binds
@@ -26,4 +27,9 @@ interface IncomeViewModelsModule {
     @IntoMap
     @ViewModelKey(IncomeHistoryViewModel::class)
     fun bindIncomeHistory(factory: IncomeHistoryViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(IncomeAnalysisViewModel::class)
+    fun bindIncomeAnalysis(factory: IncomeAnalysisViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
 }

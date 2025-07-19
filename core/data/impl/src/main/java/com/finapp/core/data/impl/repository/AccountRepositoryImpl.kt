@@ -18,7 +18,7 @@ import javax.inject.Singleton
 class AccountRepositoryImpl @Inject constructor(
     private val accountRemoteSource: AccountRemoteSource
 ) : AccountRepository {
-    override suspend fun getAccount(): Outcome<Account> =
+    override suspend fun fetchAccount(): Outcome<Account> =
         accountRemoteSource.fetchAccountById(BuildConfig.ACCOUNT_ID)
             .transform { dto -> dto.asAccount() }
 

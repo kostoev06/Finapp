@@ -5,7 +5,7 @@ import com.finapp.core.data.api.model.Transaction
 import com.finapp.core.data.api.model.TransactionBrief
 
 interface TransactionRepository {
-    suspend fun getTransactionsByPeriod(
+    suspend fun fetchTransactionsByPeriod(
         startDate: String?,
         endDate: String?
     ): Outcome<List<Transaction>>
@@ -25,7 +25,7 @@ interface TransactionRepository {
         comment: String?
     ): Outcome<Transaction>
 
-    suspend fun getTransactionById(
+    suspend fun fetchTransactionById(
         id: Long
     ): Outcome<Transaction>
 }

@@ -1,8 +1,6 @@
 package com.finapp.feature.account.di
 
 import androidx.lifecycle.ViewModelProvider
-import com.finapp.feature.account.AccountViewModel
-import dagger.Component
 import dagger.Module
 import dagger.Subcomponent
 

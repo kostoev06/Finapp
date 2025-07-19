@@ -56,6 +56,7 @@ fun IncomeEditRoute(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+    var saveButtonEnabled by remember { mutableStateOf(true) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -70,6 +71,7 @@ fun IncomeEditRoute(
 
                 IncomeEditUiEvent.OnSaveSuccess -> {
                     popBack()
+                    saveButtonEnabled = false
                 }
             }
         }
@@ -88,6 +90,7 @@ fun IncomeEditRoute(
             onChooseTime = viewModel::onChooseTime,
             onCommentChange = viewModel::onCommentChange,
             onSave = viewModel::onSave,
+            saveButtonEnabled = saveButtonEnabled,
             popBack = popBack,
             modifier = modifier.padding(it)
         )
@@ -106,6 +109,7 @@ fun IncomeEditScreen(
     onChooseTime: (LocalTime) -> Unit,
     onCommentChange: (String) -> Unit,
     onSave: () -> Unit,
+    saveButtonEnabled: Boolean,
     popBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -144,6 +148,7 @@ fun IncomeEditScreen(
         onClickTime = { showTimePicker = true },
         onCommentChange = onCommentChange,
         onSave = onSave,
+        saveButtonEnabled = saveButtonEnabled,
         popBack = popBack,
         modifier = modifier,
     )
@@ -160,9 +165,12 @@ fun IncomeEditContent(
     onClickTime: () -> Unit,
     onCommentChange: (String) -> Unit,
     onSave: () -> Unit,
+    saveButtonEnabled: Boolean,
     popBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var backButtonEnabled by remember { mutableStateOf(true) }
+
     if (state.isCategoryDialogVisible) {
         AlertDialog(
             onDismissRequest = onCancelDialog,
@@ -197,12 +205,21 @@ fun IncomeEditContent(
             FinappTopAppBar(
                 title = { Text(stringResource(R.string.my_income)) },
                 navigationIcon = {
-                    IconButton(onClick = popBack) {
+                    IconButton(
+                        onClick = {
+                            popBack()
+                            backButtonEnabled = false
+                        },
+                        enabled = backButtonEnabled
+                    ) {
                         Icon(painterResource(R.drawable.ic_close), contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = onSave) {
+                    IconButton(
+                        onClick = onSave,
+                        enabled = saveButtonEnabled
+                    ) {
                         Icon(painterResource(R.drawable.ic_check), contentDescription = null)
                     }
                 }

@@ -4,7 +4,7 @@ import com.finapp.core.common.outcome.Outcome
 import com.finapp.core.data.api.model.Account
 
 interface AccountRepository {
-    suspend fun getAccount(): Outcome<Account>
+    suspend fun fetchAccount(): Outcome<Account>
 
     suspend fun updateAccount(
         name: String,

@@ -10,5 +10,7 @@ sealed class IncomeNavigationDestination {
     @Serializable
     data object IncomeHistory : IncomeNavigationDestination()
     @Serializable
+    data object IncomeAnalysis : IncomeNavigationDestination()
+    @Serializable
     data class EditIncome(val incomeId: Long?) : IncomeNavigationDestination()
 }

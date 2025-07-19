@@ -28,6 +28,7 @@ android {
 dependencies {
     api(project(":core:data:api"))
     implementation(project(":core:remote:impl"))
+    implementation(project(":core:database:impl"))
 
     implementation(libs.kotlinx.coroutines.core)
 

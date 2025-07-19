@@ -33,6 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.feature.account.R
@@ -50,6 +53,7 @@ fun AccountEditRoute(
     modifier: Modifier = Modifier
 ) {
     val state = viewModel.uiState.collectAsState().value
+    var saveButtonEnabled by remember { mutableStateOf(true) }
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -64,6 +68,7 @@ fun AccountEditRoute(
 
                 AccountEditUiEvent.OnSaveSuccess -> {
                     popBack()
+                    saveButtonEnabled = false
                 }
             }
         }
@@ -80,6 +85,7 @@ fun AccountEditRoute(
             onCurrencySelect = viewModel::onCurrencySelect,
             onCancelSheet = viewModel::onCancelSheet,
             popBack = popBack,
+            saveButtonEnabled = saveButtonEnabled,
             onSave = viewModel::onSave,
             modifier = modifier.padding(it)
         )
@@ -96,6 +102,7 @@ fun AccountEditScreen(
     onCurrencySelect: (CurrencyCode) -> Unit,
     onCancelSheet: () -> Unit,
     popBack: () -> Unit,
+    saveButtonEnabled: Boolean,
     onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -107,6 +114,7 @@ fun AccountEditScreen(
         onCurrencySelect = onCurrencySelect,
         onCancelSheet = onCancelSheet,
         popBack = popBack,
+        saveButtonEnabled = saveButtonEnabled,
         onSave = onSave,
         modifier = modifier
     )
@@ -122,9 +130,12 @@ fun AccountEditContent(
     onCurrencySelect: (CurrencyCode) -> Unit,
     onCancelSheet: () -> Unit,
     popBack: () -> Unit,
+    saveButtonEnabled: Boolean,
     onSave: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var backButtonEnabled by remember { mutableStateOf(true) }
+
     if (state.isCurrencySheetVisible) {
         ModalBottomSheet(onDismissRequest = onCancelSheet) {
             listOf(
@@ -186,12 +197,21 @@ fun AccountEditContent(
             FinappTopAppBar(
                 title = { Text(stringResource(R.string.account_top_title)) },
                 navigationIcon = {
-                    IconButton(onClick = popBack) {
+                    IconButton(
+                        onClick = {
+                            popBack()
+                            backButtonEnabled = false
+                        },
+                        enabled = backButtonEnabled
+                    ) {
                         Icon(painterResource(R.drawable.ic_close), contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = onSave) {
+                    IconButton(
+                        onClick = onSave,
+                        enabled = saveButtonEnabled
+                    ) {
                         Icon(painterResource(R.drawable.ic_check), contentDescription = null)
                     }
                 }

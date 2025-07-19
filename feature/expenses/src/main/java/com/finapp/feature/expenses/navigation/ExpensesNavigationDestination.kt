@@ -10,5 +10,7 @@ sealed class ExpensesNavigationDestination {
     @Serializable
     data object ExpensesHistory : ExpensesNavigationDestination()
     @Serializable
+    data object ExpensesAnalysis : ExpensesNavigationDestination()
+    @Serializable
     data class EditExpense(val expenseId: Long?) : ExpensesNavigationDestination()
 }

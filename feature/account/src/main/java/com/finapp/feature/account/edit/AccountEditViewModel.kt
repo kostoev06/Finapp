@@ -7,12 +7,10 @@ import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
-import com.finapp.feature.account.AccountViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -44,7 +42,7 @@ class AccountEditViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            accountRepository.getAccount()
+            accountRepository.fetchAccount()
                 .handleOutcome {
                     onSuccess {
                         val balance = data.balance.toPlainString()

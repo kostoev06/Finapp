@@ -21,7 +21,7 @@ class TransactionRepositoryImpl @Inject constructor(
     private val transactionRemoteSource: TransactionRemoteSource
 ) : TransactionRepository {
 
-    override suspend fun getTransactionsByPeriod(
+    override suspend fun fetchTransactionsByPeriod(
         startDate: String?,
         endDate: String?
     ): Outcome<List<Transaction>> {
@@ -59,7 +59,7 @@ class TransactionRepositoryImpl @Inject constructor(
         ).transform { it.asTransaction() }
     }
 
-    override suspend fun getTransactionById(id: Long): Outcome<Transaction> {
+    override suspend fun fetchTransactionById(id: Long): Outcome<Transaction> {
         return transactionRemoteSource.fetchTransactionById(id).transform {
             it.asTransaction()
         }

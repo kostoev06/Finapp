@@ -10,7 +10,6 @@ import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
-import com.finapp.feature.common.utils.toFormattedString
 import com.finapp.feature.expenses.navigation.ExpensesNavigationDestination
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -66,7 +65,7 @@ class ExpenseEditViewModel @AssistedInject constructor(
     init {
         if (expenseId != null) {
             viewModelScope.launch {
-                transactionRepository.getTransactionById(expenseId)
+                transactionRepository.fetchTransactionById(expenseId)
                     .handleOutcome {
                         onSuccess {
                             _uiState.update {
@@ -102,7 +101,7 @@ class ExpenseEditViewModel @AssistedInject constructor(
         }
         viewModelScope.launch {
             val accountName: String =
-                when (val accountOutcome = accountRepository.getAccount()) {
+                when (val accountOutcome = accountRepository.fetchAccount()) {
                     is Outcome.Success -> accountOutcome.data.name
                     else -> {
                         _events.emit(
@@ -114,7 +113,7 @@ class ExpenseEditViewModel @AssistedInject constructor(
                         ""
                     }
                 }
-            categoryRepository.getCategoriesByType(isIncome = false).handleOutcome {
+            categoryRepository.fetchCategoriesByType(isIncome = false).handleOutcome {
                 onSuccess {
                     _uiState.update {
                         it.copy(

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
-import com.finapp.feature.account.AccountViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -20,7 +19,7 @@ class HomeViewModel @AssistedInject constructor(
 ) : ViewModel() {
     init {
         viewModelScope.launch {
-            accountRepository.getAccount().handleOutcome {
+            accountRepository.fetchAccount().handleOutcome {
                 onSuccess {
                     currencyRepository.setCurrency(data.currency.code)
                 }

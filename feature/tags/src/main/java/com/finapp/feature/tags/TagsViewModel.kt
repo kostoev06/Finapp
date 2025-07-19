@@ -33,7 +33,7 @@ class TagsViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            categoryRepository.getCategories().handleOutcome {
+            categoryRepository.fetchCategories().handleOutcome {
                 onSuccess {
                     val uiList = data
                         .map { dto -> dto.asTagsItemUiState() }

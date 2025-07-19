@@ -9,7 +9,6 @@ import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.utils.toFormattedString
-import com.finapp.feature.expenses.edit.ExpenseEditViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -71,7 +70,7 @@ class ExpensesHistoryViewModel @AssistedInject constructor(
     }
 
     private suspend fun fetchTransactions() {
-        transactionRepository.getTransactionsByPeriod(
+        transactionRepository.fetchTransactionsByPeriod(
             startDate = _uiState.value.startDate.toString(),
             endDate = _uiState.value.endDate.toString()
         ).handleOutcome {
