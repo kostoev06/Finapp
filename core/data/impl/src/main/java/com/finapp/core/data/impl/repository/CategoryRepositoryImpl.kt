@@ -16,13 +16,13 @@ import javax.inject.Singleton
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryRemoteSource: CategoryRemoteSource
 ) : CategoryRepository {
-    override suspend fun getCategories() =
+    override suspend fun fetchCategories() =
         categoryRemoteSource.fetchCategories()
             .transform { dtoList ->
                 dtoList.map { it.asCategory() }
             }
 
-    override suspend fun getCategoriesByType(isIncome: Boolean): Outcome<List<Category>> =
+    override suspend fun fetchCategoriesByType(isIncome: Boolean): Outcome<List<Category>> =
         categoryRemoteSource.fetchCategoriesByType(isIncome)
             .transform { dtoList ->
                 dtoList.map { it.asCategory() }

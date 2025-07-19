@@ -5,7 +5,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.finapp.feature.expenses.ExpensesRoute
+import com.finapp.feature.expenses.analysis.ExpensesAnalysisRoute
+import com.finapp.feature.expenses.homepage.ExpensesRoute
 import com.finapp.feature.expenses.di.LocalFeatureExpensesComponentBuilder
 import com.finapp.feature.expenses.edit.ExpenseEditRoute
 import com.finapp.feature.expenses.history.ExpensesHistoryRoute
@@ -25,7 +26,17 @@ inline fun <reified T : Any> NavGraphBuilder.expensesNavigation(
                         id
                     )
                 )
-            })
+            },
+            onAnalysis = { navController.navigate(ExpensesNavigationDestination.ExpensesAnalysis) }
+        )
+    }
+    composable<ExpensesNavigationDestination.ExpensesAnalysis> {
+        val expensesComponentBuilder = LocalFeatureExpensesComponentBuilder.current
+        val expensesComponent = remember { expensesComponentBuilder.build() }
+        ExpensesAnalysisRoute(
+            viewModel = viewModel(factory = expensesComponent.viewModelFactory()),
+            onClickBack = { navController.popBackStack() }
+        )
     }
     composable<ExpensesNavigationDestination.EditExpense> {
         val expensesComponentBuilder = LocalFeatureExpensesComponentBuilder.current

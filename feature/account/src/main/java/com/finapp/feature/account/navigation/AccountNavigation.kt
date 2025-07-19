@@ -5,7 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.finapp.feature.account.AccountRoute
+import com.finapp.feature.account.homepage.AccountRoute
 import com.finapp.feature.account.di.LocalFeatureAccountComponentBuilder
 import com.finapp.feature.account.edit.AccountEditRoute
 

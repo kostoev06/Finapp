@@ -1,6 +1,7 @@
 package com.finapp.finapp.di
 
 import com.finapp.core.data.impl.di.CoreDataModule
+import com.finapp.core.database.impl.di.CoreDatabaseModule
 import com.finapp.core.remote.impl.di.CoreRemoteModule
 import com.finapp.feature.account.di.FeatureAccountComponent
 import com.finapp.feature.expenses.di.FeatureExpensesComponent
@@ -17,6 +18,7 @@ import javax.inject.Singleton
     modules = [
         CoreDataModule::class,
         CoreRemoteModule::class,
+        CoreDatabaseModule::class,
         FeatureHomeComponent.InstallationModule::class,
         FeatureAccountComponent.InstallationModule::class,
         FeatureIncomeComponent.InstallationModule::class,

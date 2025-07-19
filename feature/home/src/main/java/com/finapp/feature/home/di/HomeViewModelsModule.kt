@@ -1,8 +1,6 @@
 package com.finapp.feature.home.di
 
 import androidx.lifecycle.ViewModel
-import com.finapp.feature.account.AccountViewModel
-import com.finapp.feature.account.edit.AccountEditViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
 import com.finapp.feature.home.HomeViewModel

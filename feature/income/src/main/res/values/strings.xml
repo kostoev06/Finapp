@@ -1,6 +1,9 @@
 <resources>
     <string name="income_top_title">Доходы сегодня</string>
     <string name="amount_with_currency">%1$s %2$s</string>
+    <string name="percentage_format">%1$s%%</string>
     <string name="my_income">Мои доходы</string>
     <string name="amount">Сумма</string>
+    <string name="analysis">Анализ</string>
+    <string name="no_data_for_period">Нет данных за выбранный период</string>
 </resources>

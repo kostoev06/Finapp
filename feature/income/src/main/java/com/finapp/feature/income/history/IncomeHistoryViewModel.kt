@@ -70,7 +70,7 @@ class IncomeHistoryViewModel @AssistedInject constructor(
     }
 
     private suspend fun fetchTransactions() {
-        transactionRepository.getTransactionsByPeriod(
+        transactionRepository.fetchTransactionsByPeriod(
             startDate = _uiState.value.startDate.toString(),
             endDate = _uiState.value.endDate.toString()
         ).handleOutcome {

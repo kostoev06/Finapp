@@ -20,5 +20,6 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":core:data:impl"))
     implementation(project(":core:remote:impl"))
+    implementation(project(":core:database:impl"))
     implementation(libs.androidx.core.splashscreen)
 }

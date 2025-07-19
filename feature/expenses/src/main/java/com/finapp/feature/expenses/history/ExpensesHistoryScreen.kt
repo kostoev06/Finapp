@@ -35,6 +35,7 @@ fun ExpensesHistoryRoute(
     viewModel: ExpensesHistoryViewModel = viewModel(),
     onClickBack: () -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -59,6 +60,7 @@ fun ExpensesHistoryRoute(
         onChooseStartDate = viewModel::onChooseStartDate,
         onChooseEndDate = viewModel::onChooseEndDate,
         onEditIncome = onEditIncome,
+        onAnalysis = onAnalysis,
         modifier = modifier
     )
 
@@ -71,6 +73,7 @@ fun ExpensesHistoryScreen(
     onChooseStartDate: (LocalDate) -> Unit,
     onChooseEndDate: (LocalDate) -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showStartPicker by remember { mutableStateOf(false) }
@@ -102,6 +105,7 @@ fun ExpensesHistoryScreen(
         onClickStartDate = { showStartPicker = true },
         onClickEndDate = { showEndPicker = true },
         onEditIncome = onEditIncome,
+        onAnalysis = onAnalysis,
         modifier = modifier
     )
 }
@@ -113,19 +117,28 @@ fun ExpensesHistoryContent(
     onClickStartDate: () -> Unit,
     onClickEndDate: () -> Unit,
     onEditIncome: (Long?) -> Unit,
+    onAnalysis: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var backButtonEnabled by remember { mutableStateOf(true) }
+
     Scaffold(
         topBar = {
             FinappTopAppBar(
                 title = { Text("Моя история") },
                 navigationIcon = {
-                    IconButton(onClick = { onClickBack() }) {
+                    IconButton(
+                        onClick = {
+                            onClickBack()
+                            backButtonEnabled = false
+                        },
+                        enabled = backButtonEnabled
+                    ) {
                         Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = { onAnalysis() }) {
                         Icon(painterResource(R.drawable.ic_analysis), contentDescription = null)
                     }
                 }
