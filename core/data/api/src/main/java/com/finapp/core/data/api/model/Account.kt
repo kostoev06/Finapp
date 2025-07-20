@@ -10,7 +10,5 @@ data class Account(
     val id: Long,
     val name: String,
     val balance: BigDecimal,
-    val currency: CurrencyCode,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val currency: CurrencyCode
 )

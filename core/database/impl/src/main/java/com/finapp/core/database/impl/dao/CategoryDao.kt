@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.finapp.core.database.api.entity.CategoryEntity
 import com.finapp.core.database.impl.entity.CategoryRoomEntity
 
 @Dao
@@ -13,8 +14,8 @@ interface CategoryDao {
     @Query("SELECT * FROM categories")
     suspend fun getAll(): List<CategoryRoomEntity>
 
-    @Query("SELECT * FROM categories WHERE id = :backendId LIMIT 1")
-    suspend fun getByBackendId(backendId: Long): CategoryRoomEntity?
+    @Query("SELECT * FROM categories WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): CategoryRoomEntity?
 
     @Query("SELECT * FROM categories WHERE is_income = :isIncome")
     suspend fun getByType(isIncome: Boolean): List<CategoryRoomEntity>

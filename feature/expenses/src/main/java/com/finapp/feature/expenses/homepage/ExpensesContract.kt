@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
  * UI-состояние элемента расхода.
  */
 data class ExpensesItemUiState(
-    val id: Long,
+    val id: Long?,
     val leadingSymbols: String? = null,
     val title: String,
     val subtitle: String? = null,

@@ -6,6 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.finapp.core.common.outcome.Outcome
 import com.finapp.core.common.outcome.handleOutcome
+import com.finapp.core.data.api.model.Transaction
+import com.finapp.core.data.api.model.TransactionBrief
+import com.finapp.core.data.api.model.TransactionInfo
+import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.TransactionRepository
@@ -27,8 +31,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 
 sealed class ExpenseEditUiEvent {
@@ -42,7 +44,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
-    private val expenseId = savedStateHandle.toRoute<ExpensesNavigationDestination.EditExpense>().expenseId
+    private val expenseId =
+        savedStateHandle.toRoute<ExpensesNavigationDestination.EditExpense>().expenseId
 
     private val _uiState = MutableStateFlow(
         ExpenseEditScreenUiState(
@@ -68,17 +71,15 @@ class ExpenseEditViewModel @AssistedInject constructor(
                 transactionRepository.fetchTransactionById(expenseId)
                     .handleOutcome {
                         onSuccess {
-                            _uiState.update {
-                                it.copy(
-                                    currentCategoryState = data.category.asCategoryUiState(),
-                                    amountFieldState = data.amount.toString(),
-                                    dateState = data.transactionDate.toLocalDate(),
-                                    timeState = data.transactionDate.toLocalTime(),
-                                    commentFieldState = data.comment ?: ""
-                                )
-                            }
+                            updateUiState(data)
+                            transactionRepository.insertSyncedLocalTransaction(data.asTransactionInfo())
                         }
                         onFailure {
+                            val localData = transactionRepository.getLocalTransactionById(expenseId)
+                            if (localData != null) {
+                                updateUiState(localData)
+                            }
+
                             onError {
                                 _events.emit(
                                     ExpenseEditUiEvent.ShowError(
@@ -110,7 +111,7 @@ class ExpenseEditViewModel @AssistedInject constructor(
                                 message = "Неизвестная ошибка"
                             )
                         )
-                        ""
+                        accountRepository.getLocalAccount()?.name ?: ""
                     }
                 }
             categoryRepository.fetchCategoriesByType(isIncome = false).handleOutcome {
@@ -119,6 +120,16 @@ class ExpenseEditViewModel @AssistedInject constructor(
                         it.copy(
                             accountFieldState = accountName,
                             categoriesListState = data.map { category -> category.asCategoryUiState() }
+                                .toImmutableList()
+                        )
+                    }
+                }
+                onFailure {
+                    val localData = categoryRepository.getLocalCategoriesByType(isIncome = false)
+                    _uiState.update {
+                        it.copy(
+                            accountFieldState = accountName,
+                            categoriesListState = localData.map { category -> category.asCategoryUiState() }
                                 .toImmutableList()
                         )
                     }
@@ -191,53 +202,142 @@ class ExpenseEditViewModel @AssistedInject constructor(
 
     fun onSave() {
         viewModelScope.launch {
-            val localDateTime = LocalDateTime.of(
-                _uiState.value.dateState,
-                _uiState.value.timeState
-            )
-            val offsetDateTime = localDateTime.atOffset(ZoneOffset.UTC)
-            val isoTime = offsetDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-
-            val result = if (expenseId == null) {
-                transactionRepository.createTransaction(
-                    categoryId = _uiState.value.currentCategoryState.id,
-                    amount = _uiState.value.amountFieldState,
-                    transactionDateIso = isoTime,
-                    comment = _uiState.value.commentFieldState
+            if (_uiState.value.amountFieldState.isEmpty()) {
+                _events.emit(
+                    ExpenseEditUiEvent.ShowError(
+                        title = "Ошибка",
+                        message = "Неверный формат суммы"
+                    )
                 )
             } else {
-                transactionRepository.updateTransaction(
-                    id = expenseId,
-                    categoryId = _uiState.value.currentCategoryState.id,
-                    amount = _uiState.value.amountFieldState,
-                    transactionDateIso = isoTime,
-                    comment = _uiState.value.commentFieldState
+                val localDateTime = LocalDateTime.of(
+                    _uiState.value.dateState,
+                    _uiState.value.timeState
                 )
-            }
+                val accountData = accountRepository.getLocalAccount()
 
-            result.handleOutcome {
-                onSuccess {
-                    _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
-                }
-                onFailure {
-                    onError {
-                        _events.emit(
-                            ExpenseEditUiEvent.ShowError(
-                                title = "Ошибка $code",
-                                message = errorBody ?: "Неизвестная ошибка"
-                            )
+                if (expenseId == null) {
+                    transactionRepository.createTransaction(
+                        TransactionBrief(
+                            id = null,
+                            categoryId = _uiState.value.currentCategoryState.id,
+                            amount = _uiState.value.amountFieldState.toBigDecimal(),
+                            transactionDate = localDateTime,
+                            comment = _uiState.value.commentFieldState
                         )
+                    ).handleOutcome {
+                        onSuccess {
+                            transactionRepository.insertSyncedLocalTransaction(data)
+                            _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
+                        }
+                        onFailure {
+                            transactionRepository.insertUnsyncedLocalTransaction(
+                                TransactionInfo(
+                                    id = null,
+                                    accountId = accountData!!.id,
+                                    categoryId = _uiState.value.currentCategoryState.id,
+                                    amount = _uiState.value.amountFieldState.toBigDecimal(),
+                                    transactionDate = localDateTime,
+                                    comment = _uiState.value.commentFieldState,
+                                    createdAt = localDateTime,
+                                    updatedAt = localDateTime
+                                )
+                            )
+                            _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
+                            onError {
+                                _events.emit(
+                                    ExpenseEditUiEvent.ShowError(
+                                        title = "Ошибка $code",
+                                        message = errorBody ?: "Неизвестная ошибка"
+                                    )
+                                )
+                            }
+                            onException {
+                                _events.emit(
+                                    ExpenseEditUiEvent.ShowError(
+                                        title = "Ошибка",
+                                        message = "Неизвестная ошибка"
+                                    )
+                                )
+                            }
+                        }
                     }
-                    onException {
-                        _events.emit(
-                            ExpenseEditUiEvent.ShowError(
-                                title = "Ошибка",
-                                message = "Неизвестная ошибка"
-                            )
+                } else {
+                    transactionRepository.updateTransaction(
+                        TransactionBrief(
+                            id = expenseId,
+                            categoryId = _uiState.value.currentCategoryState.id,
+                            amount = _uiState.value.amountFieldState.toBigDecimal(),
+                            transactionDate = localDateTime,
+                            comment = _uiState.value.commentFieldState
                         )
+                    ).handleOutcome {
+                        onSuccess {
+                            transactionRepository.updateSyncedLocalTransaction(data.asTransactionInfo())
+                            _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
+                        }
+                        onFailure {
+                            if (transactionRepository.getSyncedLocalTransactionById(expenseId) != null) {
+                                transactionRepository.updateSyncedLocalTransaction(
+                                    TransactionInfo(
+                                        id = expenseId,
+                                        accountId = accountData!!.id,
+                                        categoryId = _uiState.value.currentCategoryState.id,
+                                        amount = _uiState.value.amountFieldState.toBigDecimal(),
+                                        transactionDate = localDateTime,
+                                        comment = _uiState.value.commentFieldState,
+                                        createdAt = localDateTime,
+                                        updatedAt = localDateTime
+                                    )
+                                )
+                            } else {
+                                transactionRepository.updateUnsyncedLocalTransaction(
+                                    TransactionInfo(
+                                        id = expenseId,
+                                        accountId = accountData!!.id,
+                                        categoryId = _uiState.value.currentCategoryState.id,
+                                        amount = _uiState.value.amountFieldState.toBigDecimal(),
+                                        transactionDate = localDateTime,
+                                        comment = _uiState.value.commentFieldState,
+                                        createdAt = localDateTime,
+                                        updatedAt = localDateTime
+                                    )
+                                )
+                            }
+
+                            _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
+                            onError {
+                                _events.emit(
+                                    ExpenseEditUiEvent.ShowError(
+                                        title = "Ошибка $code",
+                                        message = errorBody ?: "Неизвестная ошибка"
+                                    )
+                                )
+                            }
+                            onException {
+                                _events.emit(
+                                    ExpenseEditUiEvent.ShowError(
+                                        title = "Ошибка",
+                                        message = "Неизвестная ошибка"
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun updateUiState(data: Transaction) {
+        _uiState.update {
+            it.copy(
+                currentCategoryState = data.category.asCategoryUiState(),
+                amountFieldState = data.amount.toString(),
+                dateState = data.updatedAt.toLocalDate(),
+                timeState = data.updatedAt.toLocalTime(),
+                commentFieldState = data.comment ?: ""
+            )
         }
     }
 

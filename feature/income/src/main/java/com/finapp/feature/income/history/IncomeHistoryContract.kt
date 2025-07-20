@@ -10,7 +10,7 @@ import java.time.LocalDate
  * UI-состояние элемента истории доходов.
  */
 data class IncomeHistoryItemUiState(
-    val id: Long,
+    val id: Long?,
     val title: String,
     val subtitle: String? = null,
     val amount: String,

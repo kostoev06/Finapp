@@ -11,5 +11,5 @@ fun Transaction.asExpensesHistoryItemUiState() =
         title = category.name,
         subtitle = comment?.ifBlank { null },
         amount = amount.toFormattedString(),
-        timeText = createdAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
+        timeText = updatedAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
     )

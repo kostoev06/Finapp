@@ -7,7 +7,7 @@ import java.time.LocalDateTime
  * Доменная модель для транзакции.
  */
 data class Transaction(
-    val id: Long,
+    val id: Long?,
     val accountId: Long,
     val category: Category,
     val amount: BigDecimal,

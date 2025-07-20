@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.CurrencyCode
+import com.finapp.core.data.api.model.Transaction
+import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
@@ -22,13 +24,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 sealed class IncomeAnalysisUiEvent {
     data class ShowError(val title: String, val message: String) : IncomeAnalysisUiEvent()
 }
 
 /**
- * ViewModel для экрана истории расходов.
+ * ViewModel для экрана анализа доходов.
  */
 class IncomeAnalysisViewModel @AssistedInject constructor(
     private val transactionRepository: TransactionRepository,
@@ -93,25 +99,18 @@ class IncomeAnalysisViewModel @AssistedInject constructor(
             )
             .handleOutcome {
                 onSuccess {
-                    val onlyExpenses = data.filter { it.category.isIncome }
-
-                    val total = onlyExpenses
-                        .sumOf { it.amount }
-                        .toFormattedString()
-
-                    val grouped = onlyExpenses
-                        .toAnalysisItems()
-                        .toImmutableList()
-
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            summary = IncomeAnalysisSumUiState(totalAmount = total),
-                            items = grouped
-                        )
-                    }
+                    updateUiState(data)
+                    data.forEach { transactionRepository.insertSyncedLocalTransaction(it.asTransactionInfo()) }
                 }
                 onFailure {
+                    val todayStart = _uiState.value.startDate.atStartOfDay().atOffset(ZoneOffset.UTC).format(
+                        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    val todayEnd = LocalDateTime
+                        .of(_uiState.value.endDate, LocalTime.MAX)
+                        .atOffset(ZoneOffset.UTC)
+                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                    updateUiState(transactionRepository.getLocalTransactionsByPeriod(startIso = todayStart, endIso = todayEnd))
+
                     onError {
                         _events.emit(
                             IncomeAnalysisUiEvent.ShowError(
@@ -130,6 +129,26 @@ class IncomeAnalysisViewModel @AssistedInject constructor(
                     }
                 }
             }
+    }
+
+    private fun updateUiState(data: List<Transaction>) {
+        val onlyIncome = data.filter { it.category.isIncome }
+
+        val total = onlyIncome
+            .sumOf { it.amount }
+            .toFormattedString()
+
+        val grouped = onlyIncome
+            .toAnalysisItems()
+            .toImmutableList()
+
+        _uiState.update {
+            it.copy(
+                isLoading = false,
+                summary = IncomeAnalysisSumUiState(totalAmount = total),
+                items = grouped
+            )
+        }
     }
 
 

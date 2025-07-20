@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class IncomeEditScreenUiState(
-    val expenseId: Long?,
+    val incomeId: Long?,
     val accountFieldState: String,
     val currentCategoryState: CategoryUiState,
     val categoriesListState: ImmutableList<CategoryUiState>,

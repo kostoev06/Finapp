@@ -1,5 +1,6 @@
 package com.finapp.finapp.di
 
+import android.content.Context
 import com.finapp.core.data.impl.di.CoreDataModule
 import com.finapp.core.database.impl.di.CoreDatabaseModule
 import com.finapp.core.remote.impl.di.CoreRemoteModule
@@ -31,6 +32,8 @@ interface AppComponent {
 
     @Component.Builder
     interface Builder {
+        @BindsInstance
+        fun context(context: Context): Builder
         @BindsInstance
         fun application(app: FinappApplication): Builder
 
