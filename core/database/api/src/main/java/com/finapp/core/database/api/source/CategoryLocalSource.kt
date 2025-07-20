@@ -6,7 +6,7 @@ interface CategoryLocalSource {
     suspend fun getAll(): List<CategoryEntity>
     suspend fun insertAll(list: List<CategoryEntity>)
     suspend fun deleteAll()
-    suspend fun getByBackendId(backendId: Long): CategoryEntity?
+    suspend fun getById(id: Long): CategoryEntity?
     suspend fun getByType(isIncome: Boolean): List<CategoryEntity>
     suspend fun insert(entity: CategoryEntity): Long
     suspend fun update(entity: CategoryEntity)

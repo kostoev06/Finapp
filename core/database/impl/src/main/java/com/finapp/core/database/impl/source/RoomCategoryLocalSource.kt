@@ -16,8 +16,8 @@ class RoomCategoryLocalSource @Inject constructor(
     override suspend fun getAll(): List<CategoryEntity> =
         dao.getAll().map { it.toEntity() }
 
-    override suspend fun getByBackendId(backendId: Long): CategoryEntity? =
-        dao.getByBackendId(backendId)?.toEntity()
+    override suspend fun getById(id: Long): CategoryEntity? =
+        dao.getById(id)?.toEntity()
 
     override suspend fun getByType(isIncome: Boolean): List<CategoryEntity> =
         dao.getByType(isIncome).map { it.toEntity() }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.repository.AccountRepository
+import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel @AssistedInject constructor(
     private val accountRepository: AccountRepository,
+    private val categoryRepository: CategoryRepository,
     private val currencyRepository: CurrencyRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -21,7 +23,13 @@ class HomeViewModel @AssistedInject constructor(
         viewModelScope.launch {
             accountRepository.fetchAccount().handleOutcome {
                 onSuccess {
+                    accountRepository.insertLocalAccount(data)
                     currencyRepository.setCurrency(data.currency.code)
+                }
+            }
+            categoryRepository.fetchCategories().handleOutcome {
+                onSuccess {
+                    categoryRepository.insertAllLocalCategories(data)
                 }
             }
         }

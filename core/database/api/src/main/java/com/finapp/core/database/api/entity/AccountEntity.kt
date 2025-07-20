@@ -6,6 +6,5 @@ data class AccountEntity(
     val id: Long,
     val name: String,
     val balance: BigDecimal,
-    val currency: String,
-    val isSynced: Boolean
+    val currency: String
 )

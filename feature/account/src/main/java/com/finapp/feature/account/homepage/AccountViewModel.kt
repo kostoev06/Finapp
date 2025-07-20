@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
+import com.finapp.core.data.api.model.Account
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.utils.toFormattedString
@@ -47,15 +48,11 @@ class AccountViewModel @AssistedInject constructor(
             accountRepository.fetchAccount()
                 .handleOutcome {
                     onSuccess {
-                        val balance = data.balance.toFormattedString()
-                        _uiState.update {
-                            it.copy(
-                                balanceState = BalanceItemUiState(balance),
-                                currencyState = CurrencyItemUiState(data.currency)
-                            )
-                        }
+                        updateUiState(data)
+                        accountRepository.insertLocalAccount(data)
                     }
                     onFailure {
+                        accountRepository.getLocalAccount()?.let { updateUiState(it) }
                         onError {
                             _events.emit(
                                 AccountUiEvent.ShowError(
@@ -74,6 +71,16 @@ class AccountViewModel @AssistedInject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun updateUiState(data: Account) {
+        val balance = data.balance.toFormattedString()
+        _uiState.update {
+            it.copy(
+                balanceState = BalanceItemUiState(balance),
+                currencyState = CurrencyItemUiState(data.currency)
+            )
         }
     }
 

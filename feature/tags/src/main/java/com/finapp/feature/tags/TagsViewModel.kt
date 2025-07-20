@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
+import com.finapp.core.data.api.model.Category
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
@@ -35,17 +36,8 @@ class TagsViewModel @AssistedInject constructor(
         viewModelScope.launch {
             categoryRepository.fetchCategories().handleOutcome {
                 onSuccess {
-                    val uiList = data
-                        .map { dto -> dto.asTagsItemUiState() }
-                        .toPersistentList()
-
-                    allItems = uiList
-
-                    _uiState.update {
-                        it.copy(
-                            items = uiList
-                        )
-                    }
+                    updateUiState(data)
+                    categoryRepository.insertAllLocalCategories(data)
                 }
             }
         }
@@ -67,6 +59,20 @@ class TagsViewModel @AssistedInject constructor(
                     items = filtered
                 )
             }
+        }
+    }
+
+    private fun updateUiState(data: List<Category>) {
+        val uiList = data
+            .map { dto -> dto.asTagsItemUiState() }
+            .toPersistentList()
+
+        allItems = uiList
+
+        _uiState.update {
+            it.copy(
+                items = uiList
+            )
         }
     }
 

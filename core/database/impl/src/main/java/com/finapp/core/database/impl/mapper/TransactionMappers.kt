@@ -10,7 +10,7 @@ private val iso = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
 fun TransactionRoomEntity.toEntity(): TransactionEntity =
     TransactionEntity(
-        backendId = backendId,
+        id = id,
         accountBackendId = accountId,
         categoryBackendId = categoryId,
         amount = amount.toBigDecimal(),
@@ -18,12 +18,13 @@ fun TransactionRoomEntity.toEntity(): TransactionEntity =
         comment = comment,
         createdAt = LocalDateTime.parse(createdAtIso, iso),
         updatedAt = LocalDateTime.parse(updatedAtIso, iso),
-        isSynced = isSynced
+        isSynced = isSynced,
+        isNew = isNew
     )
 
 fun TransactionEntity.toRoom(): TransactionRoomEntity =
     TransactionRoomEntity(
-        backendId = backendId,
+        id = id,
         accountId = accountBackendId,
         categoryId = categoryBackendId,
         amount = amount.stripTrailingZeros().toPlainString(),
@@ -31,5 +32,6 @@ fun TransactionEntity.toRoom(): TransactionRoomEntity =
         comment = comment,
         createdAtIso = createdAt.atOffset(ZoneOffset.UTC).format(iso),
         updatedAtIso = updatedAt.atOffset(ZoneOffset.UTC).format(iso),
-        isSynced = isSynced
+        isSynced = isSynced,
+        isNew = isNew
     )

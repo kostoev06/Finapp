@@ -5,10 +5,13 @@ import com.finapp.core.data.api.model.Account
 
 interface AccountRepository {
     suspend fun fetchAccount(): Outcome<Account>
-
     suspend fun updateAccount(
-        name: String,
-        balance: String,
-        currency: String
+        account: Account
     ): Outcome<Account>
+
+    suspend fun getLocalAccount(): Account?
+    suspend fun insertLocalAccount(account: Account): Long
+    suspend fun updateLocalAccount(account: Account)
+    suspend fun deleteLocalAccount(account: Account)
+    suspend fun deleteAllLocalAccounts()
 }

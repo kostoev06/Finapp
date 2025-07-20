@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TransactionEntity(
-    val backendId: Long?,
+    val id: Long?,
     val accountBackendId: Long,
     val categoryBackendId: Long,
     val amount: BigDecimal,
@@ -12,5 +12,6 @@ data class TransactionEntity(
     val comment: String?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-    val isSynced: Boolean
+    val isSynced: Boolean,
+    val isNew: Boolean
 )

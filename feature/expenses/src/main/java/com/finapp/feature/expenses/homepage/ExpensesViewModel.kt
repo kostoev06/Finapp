@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.CurrencyCode
+import com.finapp.core.data.api.model.Transaction
+import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
@@ -19,6 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -52,21 +58,35 @@ class ExpensesViewModel @AssistedInject constructor(
             transactionRepository.fetchTransactionsByPeriod(startDate = today, endDate = today)
                 .handleOutcome {
                     onSuccess {
-                        val transactionsSum = data
-                            .filter { transaction -> !transaction.category.isIncome }
-                            .sumOf { it.amount }
-                            .toFormattedString()
-                        _uiState.update {
-                            it.copy(
-                                summary = ExpensesSumUiState(totalAmount = transactionsSum),
-                                items = data
-                                    .filter { transaction -> !transaction.category.isIncome }
-                                    .map { transaction -> transaction.asExpensesItemUiState() }
-                                    .toImmutableList()
-                            )
-                        }
+                        updateUiState(data)
+                        data.forEach { transactionRepository.insertSyncedLocalTransaction(it.asTransactionInfo()) }
+                    }
+                    onFailure {
+                        val todayStart = LocalDate.now().atStartOfDay().atOffset(ZoneOffset.UTC).format(
+                            DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        val todayEnd = LocalDateTime
+                            .of(LocalDate.now(), LocalTime.MAX)
+                            .atOffset(ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        updateUiState(transactionRepository.getLocalTransactionsByPeriod(startIso = todayStart, endIso = todayEnd))
                     }
                 }
+        }
+    }
+
+    private fun updateUiState(data: List<Transaction>) {
+        val transactionsSum = data
+            .filter { transaction -> !transaction.category.isIncome }
+            .sumOf { it.amount }
+            .toFormattedString()
+        _uiState.update {
+            it.copy(
+                summary = ExpensesSumUiState(totalAmount = transactionsSum),
+                items = data
+                    .filter { transaction -> !transaction.category.isIncome }
+                    .map { transaction -> transaction.asExpensesItemUiState() }
+                    .toImmutableList()
+            )
         }
     }
 

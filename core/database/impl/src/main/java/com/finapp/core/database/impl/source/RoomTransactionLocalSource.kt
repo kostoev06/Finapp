@@ -13,11 +13,11 @@ import javax.inject.Singleton
 class RoomTransactionLocalSource @Inject constructor(
     private val dao: TransactionDao
 ) : TransactionLocalSource {
-    override suspend fun getByLocalId(id: Long): TransactionAndCategory? =
-        dao.getByLocalIdWithCategory(id)?.toEntity()
+    override suspend fun getById(id: Long): TransactionAndCategory? =
+        dao.getByIdWithCategory(id)?.toEntity()
 
-    override suspend fun getByBackendId(backendId: Long): TransactionAndCategory? =
-        dao.getByBackendIdWithCategory(backendId)?.toEntity()
+    override suspend fun getSyncedById(id: Long): TransactionAndCategory? =
+        dao.getSyncedByIdWithCategory(id)?.toEntity()
 
     override suspend fun getByPeriod(startIso: String, endIso: String): List<TransactionAndCategory> =
         dao.getByPeriodWithCategory(startIso, endIso)
@@ -32,8 +32,8 @@ class RoomTransactionLocalSource @Inject constructor(
     override suspend fun update(entity: TransactionEntity) =
         dao.update(entity.toRoom())
 
-    override suspend fun markSynced(tableId: Long, backendId: Long, updatedAtIso: String) =
-        dao.markAsSynced(tableId, backendId, updatedAtIso)
+    override suspend fun markSynced(tableId: Long, backendId: Long) =
+        dao.markAsSynced(tableId, backendId)
 
     override suspend fun delete(tableId: Long) =
         dao.deleteByTableId(tableId)

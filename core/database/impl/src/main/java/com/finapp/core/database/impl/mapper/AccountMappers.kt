@@ -11,8 +11,7 @@ fun AccountRoomEntity.toEntity(): AccountEntity =
         id = id,
         name = name,
         balance = balance.toBigDecimal(),
-        currency = currency,
-        isSynced = isSynced
+        currency = currency
     )
 
 fun AccountEntity.toRoom(): AccountRoomEntity =
@@ -20,6 +19,5 @@ fun AccountEntity.toRoom(): AccountRoomEntity =
         id = id,
         name = name,
         balance = balance.stripTrailingZeros().toPlainString(),
-        currency = currency,
-        isSynced = isSynced
+        currency = currency
     )

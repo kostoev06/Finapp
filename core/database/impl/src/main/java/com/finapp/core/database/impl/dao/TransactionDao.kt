@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.finapp.core.database.api.entity.TransactionAndCategory
 import com.finapp.core.database.impl.entity.TransactionRoomEntity
 import com.finapp.core.database.impl.relationships.TransactionAndCategoryRoom
 
@@ -27,21 +28,20 @@ interface TransactionDao {
     @Transaction
     @Query(
         """
-    SELECT * FROM transactions
-     WHERE id = :id
+        SELECT * FROM transactions
+        WHERE id = :id
     """
     )
-    suspend fun getByLocalIdWithCategory(id: Long): TransactionAndCategoryRoom?
+    suspend fun getByIdWithCategory(id: Long): TransactionAndCategoryRoom?
 
     @Transaction
     @Query(
         """
         SELECT * FROM transactions
-        WHERE backend_id = :backendId
-        LIMIT 1
+        WHERE id = :id AND is_synced = 1
     """
     )
-    suspend fun getByBackendIdWithCategory(backendId: Long): TransactionAndCategoryRoom?
+    suspend fun getSyncedByIdWithCategory(id: Long): TransactionAndCategoryRoom?
 
     @Transaction
     @Query("SELECT * FROM transactions WHERE is_synced = 0")
@@ -56,12 +56,11 @@ interface TransactionDao {
     @Query(
         """
         UPDATE transactions 
-        SET is_synced = 1, backend_id = :backendId, updated_at_iso = :updatedAtIso 
+        SET is_synced = 1, id = :backendId 
         WHERE id = :id
     """
     )
-    suspend fun markAsSynced(id: Long, backendId: Long, updatedAtIso: String)
-
+    suspend fun markAsSynced(id: Long, backendId: Long)
 
     @Query("DELETE FROM transactions WHERE id = :id")
     suspend fun deleteByTableId(id: Long)

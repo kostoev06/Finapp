@@ -12,7 +12,5 @@ data class AccountRoomEntity(
     val id: Long,
     val name: String,
     val balance: String,
-    val currency: String,
-    @ColumnInfo(name = "is_synced")
-    val isSynced: Boolean = false
+    val currency: String
 )

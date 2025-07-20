@@ -4,10 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
+import com.finapp.core.data.api.model.Account
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
+import com.finapp.feature.account.BuildConfig
+import com.finapp.feature.account.homepage.BalanceItemUiState
+import com.finapp.feature.account.homepage.CurrencyItemUiState
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -45,16 +50,11 @@ class AccountEditViewModel @AssistedInject constructor(
             accountRepository.fetchAccount()
                 .handleOutcome {
                     onSuccess {
-                        val balance = data.balance.toPlainString()
-                        _uiState.update {
-                            it.copy(
-                                nameFieldState = NameFieldUiState(data.name),
-                                balanceFieldState = BalanceFieldUiState(balance),
-                                currencyFieldState = CurrencyFieldUiState(data.currency)
-                            )
-                        }
+                        updateUiState(data)
+                        accountRepository.insertLocalAccount(data)
                     }
                     onFailure {
+                        accountRepository.getLocalAccount()?.let { updateUiState(it) }
                         onError {
                             _events.emit(
                                 AccountEditUiEvent.ShowError(
@@ -121,35 +121,58 @@ class AccountEditViewModel @AssistedInject constructor(
 
     fun onSave() {
         viewModelScope.launch {
-            accountRepository.updateAccount(
-                _uiState.value.nameFieldState.text,
-                _uiState.value.balanceFieldState.text,
-                _uiState.value.currencyFieldState.currency.code
-            ).handleOutcome {
-                onSuccess {
-                    _events.emit(AccountEditUiEvent.OnSaveSuccess)
-                    currencyRepository.setCurrency(_uiState.value.currencyFieldState.currency.code)
-                }
-                onFailure {
-                    onError {
-                        _events.emit(
-                            AccountEditUiEvent.ShowError(
-                                title = "Ошибка $code",
-                                message = errorBody ?: "Неизвестная ошибка"
-                            )
-                        )
+            if (_uiState.value.balanceFieldState.text.isEmpty()) {
+                _events.emit(
+                    AccountEditUiEvent.ShowError(
+                        title = "Ошибка",
+                        message = "Неверный формат суммы"
+                    )
+                )
+            } else {
+                accountRepository.updateAccount(
+                    Account(
+                        BuildConfig.ACCOUNT_ID,
+                        _uiState.value.nameFieldState.text,
+                        _uiState.value.balanceFieldState.text.toBigDecimal(),
+                        _uiState.value.currencyFieldState.currency
+                    )
+                ).handleOutcome {
+                    onSuccess {
+                        _events.emit(AccountEditUiEvent.OnSaveSuccess)
+                        currencyRepository.setCurrency(_uiState.value.currencyFieldState.currency.code)
                     }
-                    onException {
-                        _events.emit(
-                            AccountEditUiEvent.ShowError(
-                                title = "Ошибка",
-                                message = "Неизвестная ошибка"
+                    onFailure {
+                        onError {
+                            _events.emit(
+                                AccountEditUiEvent.ShowError(
+                                    title = "Ошибка $code",
+                                    message = errorBody ?: "Неизвестная ошибка"
+                                )
                             )
-                        )
+                        }
+                        onException {
+                            _events.emit(
+                                AccountEditUiEvent.ShowError(
+                                    title = "Ошибка",
+                                    message = "Неизвестная ошибка"
+                                )
+                            )
+                        }
                     }
-                }
 
+                }
             }
+        }
+    }
+
+    private fun updateUiState(data: Account) {
+        val balance = data.balance.toPlainString()
+        _uiState.update {
+            it.copy(
+                nameFieldState = NameFieldUiState(data.name),
+                balanceFieldState = BalanceFieldUiState(balance),
+                currencyFieldState = CurrencyFieldUiState(data.currency)
+            )
         }
     }
 

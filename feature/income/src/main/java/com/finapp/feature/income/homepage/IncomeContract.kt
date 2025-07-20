@@ -8,7 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
  * UI-состояние элемента дохода.
  */
 data class IncomeItemUiState(
-    val id: Long,
+    val id: Long?,
     val title: String,
     val amount: String
 )
