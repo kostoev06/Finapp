@@ -17,4 +17,5 @@ dependencies {
     implementation(project(":feature:tags"))
     implementation(project(":feature:settings"))
     implementation(project(":core:data:api"))
+    implementation(project(":core:work"))
 }

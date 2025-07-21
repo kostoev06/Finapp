@@ -28,4 +28,7 @@ android {
 dependencies {
     implementation(project(":feature:common"))
     implementation(project(":core:data:api"))
+
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
 }
