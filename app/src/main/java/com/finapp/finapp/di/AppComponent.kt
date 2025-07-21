@@ -2,6 +2,7 @@ package com.finapp.finapp.di
 
 import android.content.Context
 import com.finapp.core.data.impl.di.CoreDataModule
+import com.finapp.core.data.impl.di.DataStoreModule
 import com.finapp.core.database.impl.di.CoreDatabaseModule
 import com.finapp.core.remote.impl.di.CoreRemoteModule
 import com.finapp.feature.account.di.FeatureAccountComponent
@@ -10,6 +11,8 @@ import com.finapp.feature.home.di.FeatureHomeComponent
 import com.finapp.feature.income.di.FeatureIncomeComponent
 import com.finapp.feature.tags.di.FeatureTagsComponent
 import com.finapp.finapp.FinappApplication
+import com.finapp.core.work.transaction.di.FinappWorkComponent
+import com.finapp.core.work.transaction.di.WorkSupportModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -20,11 +23,14 @@ import javax.inject.Singleton
         CoreDataModule::class,
         CoreRemoteModule::class,
         CoreDatabaseModule::class,
+        WorkSupportModule::class,
+        DataStoreModule::class,
         FeatureHomeComponent.InstallationModule::class,
         FeatureAccountComponent.InstallationModule::class,
         FeatureIncomeComponent.InstallationModule::class,
         FeatureExpensesComponent.InstallationModule::class,
-        FeatureTagsComponent.InstallationModule::class
+        FeatureTagsComponent.InstallationModule::class,
+        FinappWorkComponent.InstallationModule::class,
     ]
 )
 interface AppComponent {
@@ -49,4 +55,5 @@ interface AppComponent {
     fun featureExpensesComponentBuilder(): FeatureExpensesComponent.Builder
 
     fun featureTagsComponentBuilder(): FeatureTagsComponent.Builder
+    fun workerComponentBuilder(): FinappWorkComponent.Builder
 }

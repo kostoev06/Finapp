@@ -10,3 +10,12 @@ data class TransactionBrief(
     val transactionDate: LocalDateTime,
     val comment: String?
 )
+
+fun Transaction.asTransactionBrief(): TransactionBrief =
+    TransactionBrief(
+        id = id,
+        categoryId = category.id,
+        amount = amount,
+        transactionDate = transactionDate,
+        comment = comment
+    )

@@ -139,6 +139,11 @@ fun AccountContent(
                 green = true,
                 height = 56
             )
+            FinappListItem(
+                headlineContent = { Text("Последняя синхронизация") },
+                firstTrailingContent = { Text(state.lastSyncTextState) },
+                height = 56
+            )
         }
     }
 }

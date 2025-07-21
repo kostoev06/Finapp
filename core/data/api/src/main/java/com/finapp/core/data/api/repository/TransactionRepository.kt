@@ -32,7 +32,13 @@ interface TransactionRepository {
 
     suspend fun getSyncedLocalTransactionById(id: Long): Transaction?
 
-    suspend fun getUnsyncedLocalTransactions(): List<Transaction>
+    suspend fun getUnsyncedOldLocalTransactions(): List<Transaction>
+
+    suspend fun getUnsyncedNewLocalTransactions(): List<Transaction>
+
+    suspend fun getOldestLocalTransactionDate(): String?
+
+    suspend fun getNewestLocalTransactionDate(): String?
 
     suspend fun insertSyncedLocalTransaction(transaction: TransactionInfo): Long
 

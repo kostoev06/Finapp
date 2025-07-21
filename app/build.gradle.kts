@@ -22,4 +22,8 @@ dependencies {
     implementation(project(":core:remote:impl"))
     implementation(project(":core:database:impl"))
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.work.runtime.ktx)
+    implementation(project(":core:work"))
 }

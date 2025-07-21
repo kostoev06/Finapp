@@ -7,7 +7,8 @@ import com.finapp.core.data.api.model.CurrencyCode
  */
 data class AccountScreenUiState(
     val balanceState: BalanceItemUiState = BalanceItemUiState(),
-    val currencyState: CurrencyItemUiState = CurrencyItemUiState()
+    val currencyState: CurrencyItemUiState = CurrencyItemUiState(),
+    val lastSyncTextState: String = "Никогда"
 )
 
 /**

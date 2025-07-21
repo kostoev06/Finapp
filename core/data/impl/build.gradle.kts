@@ -35,6 +35,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.dagger)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.material)
     ksp(libs.dagger.compiler)
     testImplementation(libs.junit)

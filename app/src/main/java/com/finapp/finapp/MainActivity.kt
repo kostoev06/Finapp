@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.finapp.core.work.transaction.SyncTransactionWorker
 import com.finapp.feature.account.di.LocalFeatureAccountComponentBuilder
 import com.finapp.feature.common.theme.FinappTheme
 import com.finapp.feature.expenses.di.LocalFeatureExpensesComponentBuilder
@@ -30,6 +33,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initSplashScreen()
         enableEdgeToEdge()
+
+        val workRequest = OneTimeWorkRequestBuilder<SyncTransactionWorker>()
+            .build()
+
+        WorkManager
+            .getInstance(this)
+            .enqueue(workRequest)
 
         val appComponent = (application as FinappApplication).appComponent
 

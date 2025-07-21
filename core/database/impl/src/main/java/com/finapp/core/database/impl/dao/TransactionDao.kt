@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.finapp.core.database.api.entity.TransactionAndCategory
 import com.finapp.core.database.impl.entity.TransactionRoomEntity
 import com.finapp.core.database.impl.relationships.TransactionAndCategoryRoom
 
@@ -44,8 +43,24 @@ interface TransactionDao {
     suspend fun getSyncedByIdWithCategory(id: Long): TransactionAndCategoryRoom?
 
     @Transaction
-    @Query("SELECT * FROM transactions WHERE is_synced = 0")
-    suspend fun getUnsynced(): List<TransactionAndCategoryRoom>
+    @Query("SELECT * FROM transactions WHERE is_synced = 0 and is_new = 0")
+    suspend fun getUnsyncedOld(): List<TransactionAndCategoryRoom>
+
+    @Transaction
+    @Query("SELECT * FROM transactions WHERE is_synced = 0 and is_new = 1")
+    suspend fun getUnsyncedNew(): List<TransactionAndCategoryRoom>
+
+    @Query("""
+        SELECT substr(MIN(transaction_date_iso), 1, 10)
+        FROM transactions
+    """)
+    suspend fun getOldestTransactionDate(): String?
+
+    @Query("""
+        SELECT substr(MAX(transaction_date_iso), 1, 10)
+        FROM transactions
+    """)
+    suspend fun getNewestTransactionDate(): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: TransactionRoomEntity): Long

@@ -12,7 +12,6 @@ import com.finapp.core.data.impl.model.asTransactionEntity
 import com.finapp.core.data.impl.model.asTransactionInfo
 import com.finapp.core.data.impl.model.asTransactionRequest
 import com.finapp.core.database.api.source.TransactionLocalSource
-import com.finapp.core.remote.api.model.TransactionRequest
 import com.finapp.core.remote.api.source.TransactionRemoteSource
 import jakarta.inject.Inject
 import javax.inject.Singleton
@@ -76,9 +75,19 @@ class TransactionRepositoryImpl @Inject constructor(
     override suspend fun getSyncedLocalTransactionById(id: Long): Transaction? =
         transactionLocalSource.getSyncedById(id)?.asTransaction()
 
-    override suspend fun getUnsyncedLocalTransactions(): List<Transaction> =
-        transactionLocalSource.getUnsynced()
+    override suspend fun getUnsyncedOldLocalTransactions(): List<Transaction> =
+        transactionLocalSource.getUnsyncedOld()
             .map { it.asTransaction() }
+
+    override suspend fun getUnsyncedNewLocalTransactions(): List<Transaction> =
+        transactionLocalSource.getUnsyncedNew()
+            .map { it.asTransaction() }
+
+    override suspend fun getOldestLocalTransactionDate(): String? =
+        transactionLocalSource.getOldestDate()
+
+    override suspend fun getNewestLocalTransactionDate(): String? =
+        transactionLocalSource.getNewestDate()
 
     override suspend fun insertSyncedLocalTransaction(transaction: TransactionInfo): Long =
         transactionLocalSource.insert(transaction.asTransactionEntity(isSynced = true, isNew = false))

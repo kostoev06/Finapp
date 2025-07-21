@@ -39,6 +39,9 @@ class TagsViewModel @AssistedInject constructor(
                     updateUiState(data)
                     categoryRepository.insertAllLocalCategories(data)
                 }
+                onFailure {
+                    updateUiState(categoryRepository.getAllLocalCategories())
+                }
             }
         }
     }

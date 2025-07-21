@@ -23,8 +23,17 @@ class RoomTransactionLocalSource @Inject constructor(
         dao.getByPeriodWithCategory(startIso, endIso)
             .map { it.toEntity() }
 
-    override suspend fun getUnsynced(): List<TransactionAndCategory> =
-        dao.getUnsynced().map { it.toEntity() }
+    override suspend fun getUnsyncedOld(): List<TransactionAndCategory> =
+        dao.getUnsyncedOld().map { it.toEntity() }
+
+    override suspend fun getUnsyncedNew(): List<TransactionAndCategory> =
+        dao.getUnsyncedNew().map { it.toEntity() }
+
+    override suspend fun getOldestDate(): String? =
+        dao.getOldestTransactionDate()
+
+    override suspend fun getNewestDate(): String? =
+        dao.getNewestTransactionDate()
 
     override suspend fun insert(entity: TransactionEntity): Long =
         dao.insert(entity.toRoom())
