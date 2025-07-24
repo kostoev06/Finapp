@@ -12,4 +12,5 @@ android {
 dependencies {
     implementation(project(":feature:common"))
     implementation(project(":core:data:api"))
+    implementation(project(":feature:charts"))
 }

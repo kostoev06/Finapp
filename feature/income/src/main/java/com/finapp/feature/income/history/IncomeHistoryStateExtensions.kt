@@ -10,5 +10,5 @@ fun Transaction.asIncomeHistoryItemUiState() =
         title = category.name,
         subtitle = comment?.ifBlank { null },
         amount = amount.toFormattedString(),
-        timeText = updatedAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
+        timeText = transactionDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
     )
