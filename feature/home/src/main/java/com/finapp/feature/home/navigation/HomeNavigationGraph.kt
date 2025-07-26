@@ -9,6 +9,7 @@ import com.finapp.feature.account.navigation.accountNavigation
 import com.finapp.feature.expenses.navigation.expensesNavigation
 import com.finapp.feature.income.navigation.incomeNavigation
 import com.finapp.feature.settings.SettingsRoute
+import com.finapp.feature.settings.navigation.settingsNavigation
 import com.finapp.feature.tags.navigation.tagsNavigation
 
 @Composable
@@ -29,8 +30,6 @@ fun HomeNavigationGraph(
 
         tagsNavigation<HomeNavigationDestination.Tags>(navController)
 
-        composable<HomeNavigationDestination.Settings> {
-            SettingsRoute()
-        }
+        settingsNavigation<HomeNavigationDestination.Settings>(navController)
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.finapp.feature.common.theme.GreenPrimary
 import com.finapp.feature.common.theme.GreenPrimaryLight
@@ -58,8 +59,15 @@ fun FinappDatePicker(
             }
         },
         colors = DatePickerDefaults.colors(
-            containerColor = GreenPrimaryLight,
-            selectedDayContainerColor = GreenPrimary
+            headlineContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            subheadContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            navigationContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            dividerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+            dayContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            weekdayContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         DatePicker(
@@ -67,10 +75,17 @@ fun FinappDatePicker(
             modifier = Modifier
                 .padding(bottom = 8.dp),
             colors = DatePickerDefaults.colors(
-                containerColor = GreenPrimaryLight,
-                selectedDayContainerColor = GreenPrimary,
+                headlineContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                subheadContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                navigationContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                dividerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedDayContainerColor = MaterialTheme.colorScheme.primary,
                 selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
-                todayDateBorderColor = GreenPrimary
+                dayContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                todayDateBorderColor = MaterialTheme.colorScheme.primary,
+                weekdayContentColor = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
     }

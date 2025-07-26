@@ -42,7 +42,7 @@ fun FinappListItem(
     secondTrailingContent: (@Composable FinanceListItemTrailingScope.() -> Unit)? = null,
     trailingIcon: @Composable (RowScope.() -> Unit)? = null,
     height: Int = 70,
-    green: Boolean = false,
+    colored: Boolean = false,
     clickable: Boolean = false,
     onClick: () -> Unit = {}
 ) {
@@ -62,7 +62,7 @@ fun FinappListItem(
                         .size(24.dp)
                         .clip(CircleShape)
                         .background(
-                            color = if (green) Color.White else GreenPrimaryLight,
+                            color = if (colored) Color.White else MaterialTheme.colorScheme.primaryContainer,
                             shape = CircleShape
                         ),
                     contentAlignment = Alignment.Center
@@ -79,10 +79,12 @@ fun FinappListItem(
             }
         } else null,
         headlineContent = headlineContent,
-        supportingContent = if (subtitle != null) { { Text(subtitle) } } else null,
+        supportingContent = if (subtitle != null) {
+            { Text(subtitle) }
+        } else null,
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Column (
+                Column(
                     horizontalAlignment = Alignment.End
                 ) {
                     with(titleScope) {
@@ -96,8 +98,11 @@ fun FinappListItem(
                 trailingIcon?.invoke(this)
             }
         },
-        colors = if (green) {
-            ListItemDefaults.colors(containerColor = GreenPrimaryLight)
+        colors = if (colored) {
+            ListItemDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                headlineColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         } else {
             ListItemDefaults.colors()
         }
@@ -143,6 +148,7 @@ private fun isEmojiCodePoint(cp: Int): Boolean {
         Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS,
         Character.UnicodeBlock.TRANSPORT_AND_MAP_SYMBOLS,
         Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS -> true
+
         else -> false
     }
 }

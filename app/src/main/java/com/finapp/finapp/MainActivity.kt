@@ -10,12 +10,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.finapp.core.settings.api.model.BrandColorOption
+import com.finapp.core.settings.api.model.ThemeMode
+import com.finapp.core.settings.api.model.ThemeSettings
 import com.finapp.core.work.transaction.SyncTransactionWorker
 import com.finapp.feature.account.di.LocalFeatureAccountComponentBuilder
 import com.finapp.feature.common.theme.FinappTheme
@@ -23,7 +29,10 @@ import com.finapp.feature.expenses.di.LocalFeatureExpensesComponentBuilder
 import com.finapp.feature.home.HomeScreen
 import com.finapp.feature.home.di.LocalFeatureHomeComponentBuilder
 import com.finapp.feature.income.di.LocalFeatureIncomeComponentBuilder
+import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
 import com.finapp.feature.tags.di.LocalFeatureTagsComponentBuilder
+import com.finapp.finapp.theme.AppThemeViewModel
+import com.finapp.finapp.theme.di.LocalFeatureMainComponentBuilder
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,19 +53,40 @@ class MainActivity : ComponentActivity() {
         val appComponent = (application as FinappApplication).appComponent
 
         setContent {
-            FinappTheme {
-                val navController = rememberNavController()
-                CompositionLocalProvider(
-                    LocalFeatureHomeComponentBuilder provides appComponent.featureHomeComponentBuilder(),
-                    LocalFeatureAccountComponentBuilder provides appComponent.featureAccountComponentBuilder(),
-                    LocalFeatureIncomeComponentBuilder provides appComponent.featureIncomeComponentBuilder(),
-                    LocalFeatureExpensesComponentBuilder provides appComponent.featureExpensesComponentBuilder(),
-                    LocalFeatureTagsComponentBuilder provides appComponent.featureTagsComponentBuilder()
-                )  {
-                    HomeScreen(
-                        navController = navController,
-                        modifier = Modifier.safeDrawingPadding()
-                    )
+            val mainComponent = remember {
+                appComponent
+                    .featureMainComponentBuilder()
+                    .build()
+            }
+
+            val appThemeVm: AppThemeViewModel =
+                viewModel(factory = mainComponent.viewModelFactory())
+            val settings = appThemeVm.themeSettings.collectAsState(
+                initial = ThemeSettings(
+                    themeMode = ThemeMode.SYSTEM,
+                    brandColor = BrandColorOption.GREEN
+                )
+            ).value
+            if (settings != null) {
+                FinappTheme(
+                    themeMode = settings.themeMode,
+                    brand = settings.brandColor
+                ) {
+                    val navController = rememberNavController()
+                    CompositionLocalProvider(
+                        LocalFeatureHomeComponentBuilder provides appComponent.featureHomeComponentBuilder(),
+                        LocalFeatureAccountComponentBuilder provides appComponent.featureAccountComponentBuilder(),
+                        LocalFeatureIncomeComponentBuilder provides appComponent.featureIncomeComponentBuilder(),
+                        LocalFeatureExpensesComponentBuilder provides appComponent.featureExpensesComponentBuilder(),
+                        LocalFeatureTagsComponentBuilder provides appComponent.featureTagsComponentBuilder(),
+                        LocalFeatureSettingsComponentBuilder provides appComponent.featureSettingsComponentBuilder(),
+                        LocalFeatureMainComponentBuilder provides appComponent.featureMainComponentBuilder()
+                    ) {
+                        HomeScreen(
+                            navController = navController,
+                            modifier = Modifier.safeDrawingPadding()
+                        )
+                    }
                 }
             }
         }

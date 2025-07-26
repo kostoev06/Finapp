@@ -5,6 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -117,7 +118,7 @@ private fun LegendInsideDonut(
                 androidx.compose.material3.Text(
                     text = "${item.percent.toInt()}% ${item.label}",
                     fontSize = textSizeSp.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     lineHeight = textSizeSp.sp
                 )
             }

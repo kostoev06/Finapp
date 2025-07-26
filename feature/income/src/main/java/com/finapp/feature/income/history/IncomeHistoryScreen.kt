@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -153,27 +154,35 @@ fun IncomeHistoryContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Начало") },
+                headlineContent = { Text(stringResource(R.string.start)) },
                 firstTrailingContent = {
-                    Text(state.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                    Text(
+                        state.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 },
-                green = true,
+                colored = true,
                 clickable = true,
                 onClick = onClickStartDate,
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Конец") },
+                headlineContent = { Text(stringResource(R.string.end)) },
                 firstTrailingContent = {
-                    Text(state.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                    Text(
+                        state.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 },
-                green = true,
+                colored = true,
                 clickable = true,
                 onClick = onClickEndDate,
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Сумма") },
+                headlineContent = { Text(stringResource(R.string.sum)) },
                 firstTrailingContent = {
                     Text(
                         stringResource(
@@ -182,10 +191,12 @@ fun IncomeHistoryContent(
                             stringResource(
                                 currencySymbolRes(state.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
 

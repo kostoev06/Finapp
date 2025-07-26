@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -135,10 +136,12 @@ fun AccountContent(
                             stringResource(
                                 currencySymbolRes(state.currencyState.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56,
             )
             FinappListItem(
@@ -147,10 +150,12 @@ fun AccountContent(
                     Text(
                         stringResource(
                             currencySymbolRes(state.currencyState.currency)
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
             FinappListItem(
@@ -181,7 +186,8 @@ fun ProfitAnalysisChart(uiState: AccountScreenUiState) {
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
                     onClick = { chartType = option },
                     colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = GreenPrimaryLight
+                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
                     selected = option == chartType
                 ) {

@@ -159,7 +159,7 @@ fun ExpensesAnalysisContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Начало") },
+                headlineContent = { Text(stringResource(R.string.start)) },
                 firstTrailingContent = {
                     SuggestionChip(
                         onClick = onClickStartDate,
@@ -174,11 +174,11 @@ fun ExpensesAnalysisContent(
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = GreenPrimary
+                            containerColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(50.dp),
                         border = BorderStroke(0.dp, Color.Transparent),
@@ -188,7 +188,7 @@ fun ExpensesAnalysisContent(
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Конец") },
+                headlineContent = { Text(stringResource(R.string.end)) },
                 firstTrailingContent = {
                     SuggestionChip(
                         onClick = onClickEndDate,
@@ -203,11 +203,11 @@ fun ExpensesAnalysisContent(
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = GreenPrimary
+                            containerColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(50.dp),
                         border = BorderStroke(0.dp, Color.Transparent),

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
@@ -149,16 +150,28 @@ fun ExpensesHistoryContent(
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
                 headlineContent = { Text("Начало") },
-                firstTrailingContent = { Text(state.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))) },
-                green = true,
+                firstTrailingContent = {
+                    Text(
+                        state.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                colored = true,
                 clickable = true,
                 onClick = onClickStartDate,
                 height = 56
             )
             FinappListItem(
                 headlineContent = { Text("Конец") },
-                firstTrailingContent = { Text(state.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))) },
-                green = true,
+                firstTrailingContent = {
+                    Text(
+                        state.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                },
+                colored = true,
                 clickable = true,
                 onClick = onClickEndDate,
                 height = 56
@@ -173,10 +186,12 @@ fun ExpensesHistoryContent(
                             stringResource(
                                 currencySymbolRes(state.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
 

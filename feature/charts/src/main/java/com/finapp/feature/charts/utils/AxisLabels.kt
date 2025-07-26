@@ -1,6 +1,7 @@
 package com.finapp.feature.charts.utils
 
 import android.graphics.Paint
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -16,7 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 @Composable
 internal fun rememberXAxisPaint(
     sizeSp: Float = 12f,
-    color: Color = Color.DarkGray
+    color: Color = MaterialTheme.colorScheme.onSurface
 ): Paint {
     val density = LocalDensity.current
     return remember(sizeSp, color) {

@@ -8,6 +8,9 @@ plugins {
 
 android {
     namespace = "com.finapp.finapp"
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -21,9 +24,10 @@ dependencies {
     implementation(project(":core:data:impl"))
     implementation(project(":core:remote:impl"))
     implementation(project(":core:database:impl"))
+    implementation(project(":core:settings:impl"))
+    implementation(project(":core:work"))
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.work.runtime.ktx)
-    implementation(project(":core:work"))
 }

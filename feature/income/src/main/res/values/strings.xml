@@ -6,4 +6,8 @@
     <string name="amount">Сумма</string>
     <string name="analysis">Анализ</string>
     <string name="no_data_for_period">Нет данных за выбранный период</string>
+    <string name="total">Всего</string>
+    <string name="start">Начало</string>
+    <string name="end">Конец</string>
+    <string name="sum">Сумма</string>
 </resources>

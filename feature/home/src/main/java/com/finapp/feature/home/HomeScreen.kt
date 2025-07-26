@@ -2,6 +2,7 @@ package com.finapp.feature.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -87,8 +88,8 @@ fun HomeBottomNavBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = GreenPrimaryLight,
-                    selectedIconColor = GreenPrimary
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedIconColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
