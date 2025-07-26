@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -88,7 +89,7 @@ fun ExpensesContent(
                     IconButton(onClick = onClickHistory) {
                         Icon(
                             painter = painterResource(R.drawable.ic_history),
-                            contentDescription = "История"
+                            contentDescription = stringResource(R.string.history)
                         )
                     }
                 }
@@ -100,7 +101,7 @@ fun ExpensesContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Всего") },
+                headlineContent = { Text(stringResource(R.string.total)) },
                 firstTrailingContent = {
                     Text(
                         stringResource(
@@ -109,10 +110,12 @@ fun ExpensesContent(
                             stringResource(
                                 currencySymbolRes(state.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
 

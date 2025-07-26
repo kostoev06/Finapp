@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -99,7 +100,7 @@ fun IncomeContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Всего") },
+                headlineContent = { Text(stringResource(R.string.total)) },
                 firstTrailingContent = {
                     Text(
                         stringResource(
@@ -108,10 +109,12 @@ fun IncomeContent(
                             stringResource(
                                 currencySymbolRes(state.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
 

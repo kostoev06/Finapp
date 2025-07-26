@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/core/work" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/account" />
+            <option value="$PROJECT_DIR$/feature/charts" />
             <option value="$PROJECT_DIR$/feature/common" />
             <option value="$PROJECT_DIR$/feature/expenses" />
             <option value="$PROJECT_DIR$/feature/home" />

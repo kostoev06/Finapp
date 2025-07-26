@@ -1,11 +1,18 @@
 package com.finapp.feature.account.homepage
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -14,16 +21,24 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.finapp.feature.account.R
+import com.finapp.feature.charts.Chart
+import com.finapp.feature.charts.model.ChartEntry
+import com.finapp.feature.charts.model.ChartType
 import com.finapp.feature.common.component.FinappListItem
 import com.finapp.feature.common.component.FinappTopAppBar
+import com.finapp.feature.common.theme.GreenPrimaryLight
 import com.finapp.feature.common.utils.currencySymbolRes
 
 
@@ -121,10 +136,12 @@ fun AccountContent(
                             stringResource(
                                 currencySymbolRes(state.currencyState.currency)
                             )
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56,
             )
             FinappListItem(
@@ -133,10 +150,12 @@ fun AccountContent(
                     Text(
                         stringResource(
                             currencySymbolRes(state.currencyState.currency)
-                        )
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 },
-                green = true,
+                colored = true,
                 height = 56
             )
             FinappListItem(
@@ -144,6 +163,50 @@ fun AccountContent(
                 firstTrailingContent = { Text(state.lastSyncTextState) },
                 height = 56
             )
+            ProfitAnalysisChart(state)
         }
+    }
+}
+
+@Composable
+fun ProfitAnalysisChart(uiState: AccountScreenUiState) {
+    var chartType by remember { mutableStateOf(ChartType.LINE) }
+    val options = ChartType.entries
+    val entries = uiState.profitItemListUiState.map {
+        ChartEntry(label = it.title, value = it.amount)
+    }
+
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SingleChoiceSegmentedButtonRow {
+            options.forEachIndexed { index, option ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
+                    onClick = { chartType = option },
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    selected = option == chartType
+                ) {
+                    Text(text = option.name)
+                }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Chart(
+            entries = entries,
+            type = chartType,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(240.dp),
+            onEntrySelected = { entry ->
+                entry?.let {
+
+                }
+            }
+        )
     }
 }

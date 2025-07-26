@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+animation="1.8.3"
 converterGson = "3.0.0"
 coreSplashscreen = "1.0.1"
 androidxDatastore = "1.1.7"
@@ -57,6 +58,7 @@ androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-juni
 androidx-compose-ui-testManifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation" }
 
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }

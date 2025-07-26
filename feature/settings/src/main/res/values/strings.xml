@@ -1,3 +1,4 @@
 <resources>
     <string name="settings_top_title">Настройки</string>
+    <string name="about_title">О программе</string>
 </resources>

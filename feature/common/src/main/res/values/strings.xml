@@ -3,4 +3,5 @@
     <string name="currency_symbol_usd">$</string>
     <string name="currency_symbol_eur">€</string>
     <string name="currency_symbol_empty"></string>
+    <string name="cancel">Отмена</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.finapp.feature.charts.component.DonutChart
 import com.finapp.feature.common.component.FinappDatePicker
 import com.finapp.feature.common.component.FinappListItem
 import com.finapp.feature.common.theme.GreenPrimary
@@ -157,7 +159,7 @@ fun ExpensesAnalysisContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Начало") },
+                headlineContent = { Text(stringResource(R.string.start)) },
                 firstTrailingContent = {
                     SuggestionChip(
                         onClick = onClickStartDate,
@@ -172,11 +174,11 @@ fun ExpensesAnalysisContent(
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = GreenPrimary
+                            containerColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(50.dp),
                         border = BorderStroke(0.dp, Color.Transparent),
@@ -186,7 +188,7 @@ fun ExpensesAnalysisContent(
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Конец") },
+                headlineContent = { Text(stringResource(R.string.end)) },
                 firstTrailingContent = {
                     SuggestionChip(
                         onClick = onClickEndDate,
@@ -201,11 +203,11 @@ fun ExpensesAnalysisContent(
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
-                                color = Color.Black
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         },
                         colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = GreenPrimary
+                            containerColor = MaterialTheme.colorScheme.primary
                         ),
                         shape = RoundedCornerShape(50.dp),
                         border = BorderStroke(0.dp, Color.Transparent),
@@ -230,9 +232,24 @@ fun ExpensesAnalysisContent(
                 height = 56
             )
 
-            Spacer(Modifier.height(24.dp))
-            HorizontalDivider()
+            if (!state.isLoading && state.items.isNotEmpty()) {
+                val slices = remember(state.items) { state.items.toPieSlices() }
 
+                DonutChart(
+                    slices = slices,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    strokeWidth = 9.dp,
+                    labelTextSizeSp = 7f,
+                    maxLegendItems = 6,
+                    radiusFraction = 0.35f,
+                    legendItemSpacing = 1.dp,
+                    legendDotSize = 5.dp
+                )
+            }
+
+            HorizontalDivider()
 
             if (state.isLoading) {
                 LoadingContent(modifier = modifier)

@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Account
+import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.AccountRepository
+import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +28,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 
@@ -43,6 +50,7 @@ private object Keys {
 class AccountViewModel @AssistedInject constructor(
     private val dataStore: DataStore<Preferences>,
     private val accountRepository: AccountRepository,
+    private val transactionRepository: TransactionRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -97,6 +105,36 @@ class AccountViewModel @AssistedInject constructor(
                                 )
                             )
                         }
+                    }
+                }
+            transactionRepository.fetchTransactionsByPeriod(null, null)
+                .handleOutcome {
+                    onSuccess {
+                        _uiState.update {
+                            it.copy(
+                                profitItemListUiState = data.toDailyProfitItems().toImmutableList()
+                            )
+                        }
+                        data.forEach { transactionRepository.insertSyncedLocalTransaction(it.asTransactionInfo()) }
+                    }
+                    onFailure {
+                        val todayStart = LocalDate.now().withDayOfMonth(1).atStartOfDay()
+                            .atOffset(ZoneOffset.UTC).format(
+                                DateTimeFormatter.ISO_OFFSET_DATE_TIME
+                            )
+                        val todayEnd = LocalDateTime
+                            .of(LocalDate.now(), LocalTime.MAX)
+                            .atOffset(ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                        _uiState.update {
+                            it.copy(
+                                profitItemListUiState = transactionRepository.getLocalTransactionsByPeriod(
+                                    startIso = todayStart,
+                                    endIso = todayEnd
+                                ).toDailyProfitItems().toImmutableList()
+                            )
+                        }
+
                     }
                 }
         }
