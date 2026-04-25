@@ -105,7 +105,7 @@ ACCOUNT_ID=your_account_id
 
 Также проект можно открыть в Android Studio и запустить конфигурацию `app`.
 
-## Что стоит посмотреть в коде
+## Отдельные архитектурные решения
 
 - Multi-module структура с разделением на `core` и `feature`
 - Dagger root component и отдельные component builders для feature-модулей
