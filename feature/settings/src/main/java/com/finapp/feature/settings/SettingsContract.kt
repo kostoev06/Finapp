@@ -8,5 +8,6 @@ import com.finapp.core.settings.api.model.ThemeMode
  */
 data class SettingsScreenUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
-    val brandColor: BrandColorOption = BrandColorOption.GREEN
+    val brandColor: BrandColorOption = BrandColorOption.GREEN,
+    val passcodeIsSet: Boolean = false
 )

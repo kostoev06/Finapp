@@ -3,6 +3,7 @@ package com.finapp.finapp.theme.di
 import androidx.lifecycle.ViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
+import com.finapp.finapp.lock.LockViewModel
 import com.finapp.finapp.theme.AppThemeViewModel
 import dagger.Binds
 import dagger.Module
@@ -14,4 +15,9 @@ interface MainViewModelsModule {
     @IntoMap
     @ViewModelKey(AppThemeViewModel::class)
     fun bindAppTheme(factory: AppThemeViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LockViewModel::class)
+    fun bindLock(factory: LockViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
 }

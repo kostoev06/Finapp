@@ -2,8 +2,9 @@ package com.finapp.feature.settings
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.core.settings.api.repository.ThemeSettingsRepository
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.settings.api.model.BrandColorOption
@@ -20,12 +21,13 @@ import kotlinx.coroutines.launch
  */
 class SettingsViewModel @AssistedInject constructor(
     private val repo: ThemeSettingsRepository,
+    passcodeRepo: PasscodeRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val uiState = repo.settings
-        .map { SettingsScreenUiState(it.themeMode, it.brandColor) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsScreenUiState())
+    val uiState = combine(repo.settings, passcodeRepo.isSet) { theme, passcodeIsSet ->
+        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsScreenUiState())
 
     fun onDarkThemeToggle(enabled: Boolean) {
         viewModelScope.launch {

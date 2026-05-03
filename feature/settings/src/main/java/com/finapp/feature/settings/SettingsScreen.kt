@@ -15,12 +15,14 @@ import androidx.compose.ui.res.stringResource
 import com.finapp.core.settings.api.model.ThemeMode
 import com.finapp.feature.common.component.FinappListItem
 import com.finapp.feature.common.component.FinappTopAppBar
+import com.finapp.feature.settings.navigation.PasscodeNavMode
 
 @Composable
 fun SettingsRoute(
     viewModel: SettingsViewModel = viewModel(),
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenPasscode: (PasscodeNavMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -29,6 +31,7 @@ fun SettingsRoute(
         onDarkThemeToggle = viewModel::onDarkThemeToggle,
         onOpenColorPicker = onOpenColorPicker,
         onOpenAbout = onOpenAbout,
+        onOpenPasscode = onOpenPasscode,
         onSelectThemeMode = viewModel::onThemeModeSelect,
         modifier = modifier
     )
@@ -40,6 +43,7 @@ fun SettingsScreen(
     onDarkThemeToggle: (Boolean) -> Unit,
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenPasscode: (PasscodeNavMode) -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -47,6 +51,7 @@ fun SettingsScreen(
         state = state,
         onDarkThemeToggle = onDarkThemeToggle,
         onOpenColorPicker = onOpenColorPicker,
+        onOpenPasscode = onOpenPasscode,
         onSelectThemeMode = onSelectThemeMode,
         onOpenAbout = onOpenAbout,
         modifier = modifier
@@ -59,6 +64,7 @@ fun SettingsContent(
     onDarkThemeToggle: (Boolean) -> Unit,
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenPasscode: (PasscodeNavMode) -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -99,8 +105,42 @@ fun SettingsContent(
 
             listOf(
                 "Звуки",
-                "Хаптики",
-                "Код пароль",
+                "Хаптики"
+            ).forEach { label ->
+                FinappListItem(
+                    headlineContent = { Text(label) },
+                    trailingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                            contentDescription = null
+                        )
+                    },
+                    clickable = true,
+                    onClick = { /* TODO */ },
+                    height = 56
+                )
+            }
+
+            FinappListItem(
+                headlineContent = { Text("Код пароль") },
+                subtitle = if (state.passcodeIsSet) "Установлен" else "Не установлен",
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                        contentDescription = null
+                    )
+                },
+                clickable = true,
+                onClick = {
+                    onOpenPasscode(
+                        if (state.passcodeIsSet) PasscodeNavMode.DISABLE
+                        else PasscodeNavMode.SETUP_NEW
+                    )
+                },
+                height = 72
+            )
+
+            listOf(
                 "Синхронизация",
                 "Язык"
             ).forEach { label ->

@@ -9,6 +9,7 @@ import com.finapp.feature.settings.BrandColorPickerRoute
 import com.finapp.feature.settings.SettingsRoute
 import com.finapp.feature.settings.about.AboutRoute
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
+import com.finapp.feature.settings.passcode.PasscodeRoute
 
 inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
     navController: NavController
@@ -29,13 +30,23 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onBack = { navController.popBackStack() },
         )
     }
+    composable<SettingsNavigationDestination.Passcode> {
+        val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
+        val settingsComponent = remember { settingsComponentBuilder.build() }
+        PasscodeRoute(
+            viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+            onBack = { navController.popBackStack() },
+            onDone = { navController.popBackStack() }
+        )
+    }
     composable<T> {
         val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
         val settingsComponent = remember { settingsComponentBuilder.build() }
         SettingsRoute(
             viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
             onOpenColorPicker = { navController.navigate(SettingsNavigationDestination.BrandColorPicker) },
-            onOpenAbout = { navController.navigate(SettingsNavigationDestination.About) }
+            onOpenAbout = { navController.navigate(SettingsNavigationDestination.About) },
+            onOpenPasscode = { mode -> navController.navigate(SettingsNavigationDestination.Passcode(mode)) }
         )
     }
 }

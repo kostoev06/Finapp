@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
@@ -30,7 +31,10 @@ import com.finapp.feature.home.HomeScreen
 import com.finapp.feature.home.di.LocalFeatureHomeComponentBuilder
 import com.finapp.feature.income.di.LocalFeatureIncomeComponentBuilder
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
+import com.finapp.feature.settings.passcode.PasscodeRoute
 import com.finapp.feature.tags.di.LocalFeatureTagsComponentBuilder
+import com.finapp.finapp.lock.LockState
+import com.finapp.finapp.lock.LockViewModel
 import com.finapp.finapp.theme.AppThemeViewModel
 import com.finapp.finapp.theme.di.LocalFeatureMainComponentBuilder
 
@@ -82,10 +86,29 @@ class MainActivity : ComponentActivity() {
                         LocalFeatureSettingsComponentBuilder provides appComponent.featureSettingsComponentBuilder(),
                         LocalFeatureMainComponentBuilder provides appComponent.featureMainComponentBuilder()
                     ) {
-                        HomeScreen(
-                            navController = navController,
-                            modifier = Modifier.safeDrawingPadding()
-                        )
+                        val lockVm: LockViewModel =
+                            viewModel(factory = mainComponent.viewModelFactory())
+                        val lockState by lockVm.state.collectAsState()
+
+                        when (lockState) {
+                            LockState.Loading -> Unit
+                            LockState.Required -> {
+                                val settingsBuilder = LocalFeatureSettingsComponentBuilder.current
+                                val settingsComponent = remember { settingsBuilder.build() }
+                                PasscodeRoute(
+                                    viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+                                    onBack = {},
+                                    onDone = lockVm::markUnlocked,
+                                    showBack = false,
+                                    modifier = Modifier.safeDrawingPadding()
+                                )
+                            }
+                            LockState.NotRequired,
+                            LockState.Unlocked -> HomeScreen(
+                                navController = navController,
+                                modifier = Modifier.safeDrawingPadding()
+                            )
+                        }
                     }
                 }
             }

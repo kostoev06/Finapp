@@ -5,6 +5,7 @@ import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
 import com.finapp.feature.settings.SettingsViewModel
 import com.finapp.feature.settings.about.AboutViewModel
+import com.finapp.feature.settings.passcode.PasscodeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,4 +21,9 @@ interface SettingsViewModelsModule {
     @IntoMap
     @ViewModelKey(AboutViewModel::class)
     fun bindAbout(factory: AboutViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PasscodeViewModel::class)
+    fun bindPasscode(factory: PasscodeViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
 }
