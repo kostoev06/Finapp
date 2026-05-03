@@ -11,6 +11,7 @@ import com.finapp.feature.settings.SettingsRoute
 import com.finapp.feature.settings.about.AboutRoute
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
 import com.finapp.feature.settings.passcode.PasscodeRoute
+import com.finapp.feature.settings.sound.SoundRoute
 import com.finapp.feature.settings.sync.SyncRoute
 
 inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
@@ -57,6 +58,14 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onBack = { navController.popBackStack() }
         )
     }
+    composable<SettingsNavigationDestination.Sound> {
+        val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
+        val settingsComponent = remember { settingsComponentBuilder.build() }
+        SoundRoute(
+            viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+            onBack = { navController.popBackStack() }
+        )
+    }
     composable<T> {
         val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
         val settingsComponent = remember { settingsComponentBuilder.build() }
@@ -66,7 +75,8 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onOpenAbout = { navController.navigate(SettingsNavigationDestination.About) },
             onOpenPasscode = { mode -> navController.navigate(SettingsNavigationDestination.Passcode(mode)) },
             onOpenLanguage = { navController.navigate(SettingsNavigationDestination.LanguagePicker) },
-            onOpenSync = { navController.navigate(SettingsNavigationDestination.Sync) }
+            onOpenSync = { navController.navigate(SettingsNavigationDestination.Sync) },
+            onOpenSound = { navController.navigate(SettingsNavigationDestination.Sound) }
         )
     }
 }

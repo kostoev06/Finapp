@@ -33,4 +33,11 @@
     <string name="sync_never">Никогда</string>
     <string name="sync_button">Синхронизировать сейчас</string>
     <string name="sync_started">Синхронизация запущена</string>
+
+    <string name="sound_title">Звуки</string>
+    <string name="sound_enabled_label">Звуки в приложении</string>
+    <string name="sound_test_success">Тестовый успех</string>
+    <string name="sound_test_error">Тестовая ошибка</string>
+    <string name="sound_state_on">Включены</string>
+    <string name="sound_state_off">Выключены</string>
 </resources>

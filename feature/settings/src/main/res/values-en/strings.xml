@@ -33,4 +33,11 @@
     <string name="sync_never">Never</string>
     <string name="sync_button">Sync now</string>
     <string name="sync_started">Sync started</string>
+
+    <string name="sound_title">Sounds</string>
+    <string name="sound_enabled_label">In-app sounds</string>
+    <string name="sound_test_success">Test success</string>
+    <string name="sound_test_error">Test error</string>
+    <string name="sound_state_on">On</string>
+    <string name="sound_state_off">Off</string>
 </resources>

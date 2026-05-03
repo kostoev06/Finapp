@@ -11,5 +11,6 @@ data class SettingsScreenUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val brandColor: BrandColorOption = BrandColorOption.GREEN,
     val passcodeIsSet: Boolean = false,
-    val language: LanguageOption = LanguageOption.RU
+    val language: LanguageOption = LanguageOption.RU,
+    val soundEnabled: Boolean = true
 )

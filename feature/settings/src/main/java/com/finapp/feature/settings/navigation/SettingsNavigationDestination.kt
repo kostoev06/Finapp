@@ -12,6 +12,8 @@ sealed class SettingsNavigationDestination {
     data object LanguagePicker : SettingsNavigationDestination()
     @Serializable
     data object Sync : SettingsNavigationDestination()
+    @Serializable
+    data object Sound : SettingsNavigationDestination()
 
     /**
      * Экран код-пароля. [mode] определяет начальный режим:

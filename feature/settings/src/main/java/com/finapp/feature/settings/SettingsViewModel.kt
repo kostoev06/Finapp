@@ -6,6 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.finapp.core.settings.api.repository.LanguageRepository
 import com.finapp.core.settings.api.repository.PasscodeRepository
+import com.finapp.core.settings.api.repository.SoundSettingsRepository
 import com.finapp.core.settings.api.repository.ThemeSettingsRepository
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -27,15 +28,17 @@ class SettingsViewModel @AssistedInject constructor(
     private val repo: ThemeSettingsRepository,
     private val languageRepo: LanguageRepository,
     passcodeRepo: PasscodeRepository,
+    soundRepo: SoundSettingsRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val uiState = combine(
         repo.settings,
         passcodeRepo.isSet,
-        languageRepo.language
-    ) { theme, passcodeIsSet, language ->
-        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet, language)
+        languageRepo.language,
+        soundRepo.enabled
+    ) { theme, passcodeIsSet, language, soundEnabled ->
+        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet, language, soundEnabled)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsScreenUiState())
 
     fun onDarkThemeToggle(enabled: Boolean) {

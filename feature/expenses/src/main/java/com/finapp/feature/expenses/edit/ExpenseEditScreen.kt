@@ -35,6 +35,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.feature.common.sound.LocalSoundPlayer
+import com.finapp.feature.common.sound.SoundEffect
 import com.finapp.feature.common.text.asString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -62,17 +64,20 @@ fun ExpenseEditRoute(
     var saveButtonEnabled by remember { mutableStateOf(true) }
     val snackbarHostState = remember { SnackbarHostState() }
     val ctx = LocalContext.current
+    val soundPlayer = LocalSoundPlayer.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is ExpenseEditUiEvent.ShowError -> {
+                    soundPlayer.play(SoundEffect.Error)
                     snackbarHostState.showSnackbar(
                         message = "${event.title.asString(ctx)}: ${event.message.asString(ctx)}"
                     )
                 }
 
                 ExpenseEditUiEvent.OnSaveSuccess -> {
+                    soundPlayer.play(SoundEffect.Success)
                     popBack()
                     saveButtonEnabled = false
                 }

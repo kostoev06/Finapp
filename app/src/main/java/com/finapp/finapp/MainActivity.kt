@@ -25,6 +25,7 @@ import com.finapp.core.settings.api.model.ThemeMode
 import com.finapp.core.settings.api.model.ThemeSettings
 import com.finapp.core.work.transaction.SyncTransactionWorker
 import com.finapp.feature.account.di.LocalFeatureAccountComponentBuilder
+import com.finapp.feature.common.sound.LocalSoundPlayer
 import com.finapp.feature.common.theme.FinappTheme
 import com.finapp.feature.expenses.di.LocalFeatureExpensesComponentBuilder
 import com.finapp.feature.home.HomeScreen
@@ -84,7 +85,8 @@ class MainActivity : AppCompatActivity() {
                         LocalFeatureExpensesComponentBuilder provides appComponent.featureExpensesComponentBuilder(),
                         LocalFeatureTagsComponentBuilder provides appComponent.featureTagsComponentBuilder(),
                         LocalFeatureSettingsComponentBuilder provides appComponent.featureSettingsComponentBuilder(),
-                        LocalFeatureMainComponentBuilder provides appComponent.featureMainComponentBuilder()
+                        LocalFeatureMainComponentBuilder provides appComponent.featureMainComponentBuilder(),
+                        LocalSoundPlayer provides appComponent.soundPlayer()
                     ) {
                         val lockVm: LockViewModel =
                             viewModel(factory = mainComponent.viewModelFactory())

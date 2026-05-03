@@ -26,6 +26,7 @@ fun SettingsRoute(
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
+    onOpenSound: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -37,6 +38,7 @@ fun SettingsRoute(
         onOpenPasscode = onOpenPasscode,
         onOpenLanguage = onOpenLanguage,
         onOpenSync = onOpenSync,
+        onOpenSound = onOpenSound,
         onSelectThemeMode = viewModel::onThemeModeSelect,
         modifier = modifier
     )
@@ -51,6 +53,7 @@ fun SettingsScreen(
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
+    onOpenSound: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,6 +64,7 @@ fun SettingsScreen(
         onOpenPasscode = onOpenPasscode,
         onOpenLanguage = onOpenLanguage,
         onOpenSync = onOpenSync,
+        onOpenSound = onOpenSound,
         onSelectThemeMode = onSelectThemeMode,
         onOpenAbout = onOpenAbout,
         modifier = modifier
@@ -76,6 +80,7 @@ fun SettingsContent(
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
+    onOpenSound: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -114,23 +119,35 @@ fun SettingsContent(
                 height = 56
             )
 
-            listOf(
-                R.string.settings_sounds,
-                R.string.settings_haptics
-            ).forEach { labelRes ->
-                FinappListItem(
-                    headlineContent = { Text(stringResource(labelRes)) },
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_right_2),
-                            contentDescription = null
-                        )
-                    },
-                    clickable = true,
-                    onClick = { /* TODO */ },
-                    height = 56
-                )
-            }
+            FinappListItem(
+                headlineContent = { Text(stringResource(R.string.settings_sounds)) },
+                subtitle = stringResource(
+                    if (state.soundEnabled) R.string.sound_state_on
+                    else R.string.sound_state_off
+                ),
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                        contentDescription = null
+                    )
+                },
+                clickable = true,
+                onClick = onOpenSound,
+                height = 72
+            )
+
+            FinappListItem(
+                headlineContent = { Text(stringResource(R.string.settings_haptics)) },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                        contentDescription = null
+                    )
+                },
+                clickable = true,
+                onClick = { /* TODO */ },
+                height = 56
+            )
 
             FinappListItem(
                 headlineContent = { Text(stringResource(R.string.settings_passcode)) },
