@@ -27,4 +27,10 @@
     <string name="passcode_error_mismatch">Codes don\'t match</string>
     <string name="passcode_error_wrong">Wrong code</string>
     <string name="passcode_keypad_backspace">Backspace</string>
+
+    <string name="sync_title">Sync</string>
+    <string name="sync_last">Last sync</string>
+    <string name="sync_never">Never</string>
+    <string name="sync_button">Sync now</string>
+    <string name="sync_started">Sync started</string>
 </resources>

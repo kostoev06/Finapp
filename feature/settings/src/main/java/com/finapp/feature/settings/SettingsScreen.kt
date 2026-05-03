@@ -25,6 +25,7 @@ fun SettingsRoute(
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
+    onOpenSync: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -35,6 +36,7 @@ fun SettingsRoute(
         onOpenAbout = onOpenAbout,
         onOpenPasscode = onOpenPasscode,
         onOpenLanguage = onOpenLanguage,
+        onOpenSync = onOpenSync,
         onSelectThemeMode = viewModel::onThemeModeSelect,
         modifier = modifier
     )
@@ -48,6 +50,7 @@ fun SettingsScreen(
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
+    onOpenSync: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -57,6 +60,7 @@ fun SettingsScreen(
         onOpenColorPicker = onOpenColorPicker,
         onOpenPasscode = onOpenPasscode,
         onOpenLanguage = onOpenLanguage,
+        onOpenSync = onOpenSync,
         onSelectThemeMode = onSelectThemeMode,
         onOpenAbout = onOpenAbout,
         modifier = modifier
@@ -71,6 +75,7 @@ fun SettingsContent(
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
     onOpenLanguage: () -> Unit,
+    onOpenSync: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -158,7 +163,7 @@ fun SettingsContent(
                     )
                 },
                 clickable = true,
-                onClick = { /* TODO */ },
+                onClick = onOpenSync,
                 height = 56
             )
 

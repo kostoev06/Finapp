@@ -11,6 +11,7 @@ import com.finapp.feature.settings.SettingsRoute
 import com.finapp.feature.settings.about.AboutRoute
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
 import com.finapp.feature.settings.passcode.PasscodeRoute
+import com.finapp.feature.settings.sync.SyncRoute
 
 inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
     navController: NavController
@@ -48,6 +49,14 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onBack = { navController.popBackStack() }
         )
     }
+    composable<SettingsNavigationDestination.Sync> {
+        val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
+        val settingsComponent = remember { settingsComponentBuilder.build() }
+        SyncRoute(
+            viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+            onBack = { navController.popBackStack() }
+        )
+    }
     composable<T> {
         val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
         val settingsComponent = remember { settingsComponentBuilder.build() }
@@ -56,7 +65,8 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onOpenColorPicker = { navController.navigate(SettingsNavigationDestination.BrandColorPicker) },
             onOpenAbout = { navController.navigate(SettingsNavigationDestination.About) },
             onOpenPasscode = { mode -> navController.navigate(SettingsNavigationDestination.Passcode(mode)) },
-            onOpenLanguage = { navController.navigate(SettingsNavigationDestination.LanguagePicker) }
+            onOpenLanguage = { navController.navigate(SettingsNavigationDestination.LanguagePicker) },
+            onOpenSync = { navController.navigate(SettingsNavigationDestination.Sync) }
         )
     }
 }

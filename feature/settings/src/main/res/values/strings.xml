@@ -27,4 +27,10 @@
     <string name="passcode_error_mismatch">Коды не совпадают</string>
     <string name="passcode_error_wrong">Неверный код</string>
     <string name="passcode_keypad_backspace">Стереть</string>
+
+    <string name="sync_title">Синхронизация</string>
+    <string name="sync_last">Последняя синхронизация</string>
+    <string name="sync_never">Никогда</string>
+    <string name="sync_button">Синхронизировать сейчас</string>
+    <string name="sync_started">Синхронизация запущена</string>
 </resources>
