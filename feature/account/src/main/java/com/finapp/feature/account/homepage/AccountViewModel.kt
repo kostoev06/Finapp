@@ -12,6 +12,8 @@ import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.text.UiText
+import com.finapp.feature.common.utils.toErrorTexts
 import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -37,7 +39,7 @@ import java.time.format.DateTimeFormatter
 
 
 sealed class AccountUiEvent {
-    data class ShowError(val title: String, val message: String) : AccountUiEvent()
+    data class ShowError(val title: UiText, val message: UiText) : AccountUiEvent()
 }
 
 private object Keys {
@@ -89,22 +91,8 @@ class AccountViewModel @AssistedInject constructor(
                     }
                     onFailure {
                         accountRepository.getLocalAccount()?.let { updateUiState(it) }
-                        onError {
-                            _events.emit(
-                                AccountUiEvent.ShowError(
-                                    title = "Ошибка $code",
-                                    message = errorBody ?: "Неизвестная ошибка"
-                                )
-                            )
-                        }
-                        onException {
-                            _events.emit(
-                                AccountUiEvent.ShowError(
-                                    title = "Ошибка",
-                                    message = "Неизвестная ошибка"
-                                )
-                            )
-                        }
+                        val (title, message) = outcome.toErrorTexts()
+                        _events.emit(AccountUiEvent.ShowError(title, message))
                     }
                 }
             transactionRepository.fetchTransactionsByPeriod(null, null)

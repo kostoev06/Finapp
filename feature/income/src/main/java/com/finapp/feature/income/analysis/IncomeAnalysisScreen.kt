@@ -35,8 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.feature.common.text.asString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,7 +52,6 @@ import com.finapp.feature.common.utils.currencySymbolRes
 import com.finapp.feature.income.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun IncomeAnalysisRoute(
@@ -60,13 +62,14 @@ fun IncomeAnalysisRoute(
     val state by viewModel.uiState.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val ctx = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is IncomeAnalysisUiEvent.ShowError -> {
                     snackbarHostState.showSnackbar(
-                        message = "${event.title}: ${event.message}"
+                        message = "${event.title.asString(ctx)}: ${event.message.asString(ctx)}"
                     )
                 }
             }
@@ -138,6 +141,9 @@ fun IncomeAnalysisContent(
 ) {
     var backButtonEnabled by remember { mutableStateOf(true) }
 
+    val locale = LocalConfiguration.current.locales[0]
+    val dateFormatter = remember(locale) { DateTimeFormatter.ofPattern("d MMMM yyyy", locale) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -165,12 +171,7 @@ fun IncomeAnalysisContent(
                         onClick = onClickStartDate,
                         label = {
                             Text(
-                                text = state.startDate.format(
-                                    DateTimeFormatter.ofPattern(
-                                        "d MMMM yyyy",
-                                        Locale("ru")
-                                    )
-                                ),
+                                text = state.startDate.format(dateFormatter),
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,
@@ -194,12 +195,7 @@ fun IncomeAnalysisContent(
                         onClick = onClickEndDate,
                         label = {
                             Text(
-                                text = state.endDate.format(
-                                    DateTimeFormatter.ofPattern(
-                                        "d MMMM yyyy",
-                                        Locale("ru")
-                                    )
-                                ),
+                                text = state.endDate.format(dateFormatter),
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
                                 lineHeight = 24.sp,

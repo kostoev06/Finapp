@@ -10,4 +10,13 @@
     <string name="end">Конец</string>
     <string name="total">Всего</string>
     <string name="history">История</string>
+
+    <string name="my_history">Моя история</string>
+    <string name="dialog_choose_category">Выберите статью</string>
+    <string name="cancel">Отмена</string>
+    <string name="account_label">Счет</string>
+    <string name="category_label">Статья</string>
+    <string name="date_label">Дата</string>
+    <string name="time_label">Время</string>
+    <string name="comment_label">Комментарий</string>
 </resources>

@@ -96,7 +96,7 @@ fun TagsSearchField(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
-        placeholder = { Text("Найти статью") },
+        placeholder = { Text(stringResource(R.string.tags_search_hint)) },
         trailingIcon = {
             Icon(painter = painterResource(R.drawable.ic_search), contentDescription = null)
         },

@@ -5,6 +5,10 @@ import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
 import com.finapp.feature.settings.SettingsViewModel
 import com.finapp.feature.settings.about.AboutViewModel
+import com.finapp.feature.settings.haptics.HapticsViewModel
+import com.finapp.feature.settings.passcode.PasscodeViewModel
+import com.finapp.feature.settings.sound.SoundViewModel
+import com.finapp.feature.settings.sync.SyncViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,4 +24,24 @@ interface SettingsViewModelsModule {
     @IntoMap
     @ViewModelKey(AboutViewModel::class)
     fun bindAbout(factory: AboutViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PasscodeViewModel::class)
+    fun bindPasscode(factory: PasscodeViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SyncViewModel::class)
+    fun bindSync(factory: SyncViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SoundViewModel::class)
+    fun bindSound(factory: SoundViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HapticsViewModel::class)
+    fun bindHaptics(factory: HapticsViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
 }

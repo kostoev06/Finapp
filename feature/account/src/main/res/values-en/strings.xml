@@ -1,0 +1,13 @@
+<resources>
+    <string name="account_top_title">My account</string>
+    <string name="amount_with_currency">%1$s %2$s</string>
+    <string name="currency_name_rub">Russian ruble ₽</string>
+    <string name="currency_name_usd">US dollar $</string>
+    <string name="currency_name_eur">Euro €</string>
+    <string name="cancel">Cancel</string>
+    <string name="title">Name</string>
+    <string name="balance">Balance</string>
+    <string name="currency">Currency</string>
+    <string name="account_last_sync">Last sync</string>
+    <string name="account_never_synced">Never</string>
+</resources>

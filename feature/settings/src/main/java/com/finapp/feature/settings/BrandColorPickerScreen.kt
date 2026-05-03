@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.finapp.core.settings.api.model.BrandColorOption
 import com.finapp.feature.common.component.FinappTopAppBar
@@ -51,7 +52,7 @@ fun BrandColorPickerScreen(
 
     Scaffold(
         topBar = { FinappTopAppBar(
-            title = { Text("Основной цвет") },
+            title = { Text(stringResource(R.string.settings_brand_color)) },
             navigationIcon = {
                 IconButton(
                     onClick = {

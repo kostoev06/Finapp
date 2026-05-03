@@ -1,3 +1,4 @@
 <resources>
     <string name="tags_top_title">Мои статьи</string>
+    <string name="tags_search_hint">Найти статью</string>
 </resources>

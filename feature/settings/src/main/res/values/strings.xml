@@ -1,4 +1,50 @@
 <resources>
     <string name="settings_top_title">Настройки</string>
+
+    <string name="settings_dark_theme">Тёмная тема</string>
+    <string name="settings_brand_color">Основной цвет</string>
+    <string name="settings_sounds">Звуки</string>
+    <string name="settings_haptics">Хаптики</string>
+    <string name="settings_passcode">Код-пароль</string>
+    <string name="settings_passcode_set">Установлен</string>
+    <string name="settings_passcode_unset">Не установлен</string>
+    <string name="settings_sync">Синхронизация</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_about">О программе</string>
+
     <string name="about_title">О программе</string>
+    <string name="about_version">Версия</string>
+    <string name="about_version_code">Версия (code)</string>
+    <string name="about_last_update">Последнее обновление</string>
+
+    <string name="passcode_title_setup">Установка кода</string>
+    <string name="passcode_title_verify">Введите код</string>
+    <string name="passcode_title_disable">Снятие кода</string>
+    <string name="passcode_prompt_setup_new">Придумайте 4-значный код</string>
+    <string name="passcode_prompt_setup_confirm">Повторите код</string>
+    <string name="passcode_prompt_verify">Введите код-пароль</string>
+    <string name="passcode_prompt_disable">Введите текущий код</string>
+    <string name="passcode_error_mismatch">Коды не совпадают</string>
+    <string name="passcode_error_wrong">Неверный код</string>
+    <string name="passcode_keypad_backspace">Стереть</string>
+
+    <string name="sync_title">Синхронизация</string>
+    <string name="sync_last">Последняя синхронизация</string>
+    <string name="sync_never">Никогда</string>
+    <string name="sync_button">Синхронизировать сейчас</string>
+    <string name="sync_started">Синхронизация запущена</string>
+
+    <string name="sound_title">Звуки</string>
+    <string name="sound_enabled_label">Звуки в приложении</string>
+    <string name="sound_test_success">Тестовый успех</string>
+    <string name="sound_test_error">Тестовая ошибка</string>
+    <string name="sound_state_on">Включены</string>
+    <string name="sound_state_off">Выключены</string>
+
+    <string name="haptics_title">Хаптики</string>
+    <string name="haptics_enabled_label">Тактильная отдача</string>
+    <string name="haptics_test_success">Тестовый успех</string>
+    <string name="haptics_test_error">Тестовая ошибка</string>
+    <string name="haptics_state_on">Включены</string>
+    <string name="haptics_state_off">Выключены</string>
 </resources>

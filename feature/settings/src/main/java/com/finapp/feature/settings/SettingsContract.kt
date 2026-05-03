@@ -1,6 +1,7 @@
 package com.finapp.feature.settings
 
 import com.finapp.core.settings.api.model.BrandColorOption
+import com.finapp.core.settings.api.model.LanguageOption
 import com.finapp.core.settings.api.model.ThemeMode
 
 /**
@@ -8,5 +9,9 @@ import com.finapp.core.settings.api.model.ThemeMode
  */
 data class SettingsScreenUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
-    val brandColor: BrandColorOption = BrandColorOption.GREEN
+    val brandColor: BrandColorOption = BrandColorOption.GREEN,
+    val passcodeIsSet: Boolean = false,
+    val language: LanguageOption = LanguageOption.RU,
+    val soundEnabled: Boolean = true,
+    val hapticsEnabled: Boolean = true
 )

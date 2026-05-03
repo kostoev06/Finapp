@@ -28,8 +28,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.feature.common.haptics.HapticEffect
+import com.finapp.feature.common.haptics.LocalHapticsPlayer
+import com.finapp.feature.common.sound.LocalSoundPlayer
+import com.finapp.feature.common.sound.SoundEffect
+import com.finapp.feature.common.text.asString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,17 +62,24 @@ fun AccountEditRoute(
     var saveButtonEnabled by remember { mutableStateOf(true) }
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val ctx = LocalContext.current
+    val soundPlayer = LocalSoundPlayer.current
+    val hapticsPlayer = LocalHapticsPlayer.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is AccountEditUiEvent.ShowError -> {
+                    soundPlayer.play(SoundEffect.Error)
+                    hapticsPlayer.play(HapticEffect.Error)
                     snackbarHostState.showSnackbar(
-                        message = "${event.title}: ${event.message}"
+                        message = "${event.title.asString(ctx)}: ${event.message.asString(ctx)}"
                     )
                 }
 
                 AccountEditUiEvent.OnSaveSuccess -> {
+                    soundPlayer.play(SoundEffect.Success)
+                    hapticsPlayer.play(HapticEffect.Success)
                     popBack()
                     saveButtonEnabled = false
                 }

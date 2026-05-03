@@ -1,0 +1,12 @@
+<resources>
+    <string name="currency_symbol_rub">₽</string>
+    <string name="currency_symbol_usd">$</string>
+    <string name="currency_symbol_eur">€</string>
+    <string name="currency_symbol_empty"></string>
+    <string name="cancel">Cancel</string>
+
+    <string name="error">Error</string>
+    <string name="error_with_code">Error %1$d</string>
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_invalid_amount">Invalid amount</string>
+</resources>

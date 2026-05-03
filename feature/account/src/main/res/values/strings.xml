@@ -8,4 +8,6 @@
     <string name="title">Название</string>
     <string name="balance">Баланс</string>
     <string name="currency">Валюта</string>
+    <string name="account_last_sync">Последняя синхронизация</string>
+    <string name="account_never_synced">Никогда</string>
 </resources>

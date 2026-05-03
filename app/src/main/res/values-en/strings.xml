@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Finapp</string>
+
+    <string name="expenses_bottom_title">Expenses</string>
+    <string name="expenses_top_title">Today\'s expenses</string>
+
+    <string name="income_bottom_title">Income</string>
+    <string name="income_top_title">Today\'s income</string>
+
+    <string name="account_bottom_title">Account</string>
+    <string name="account_top_title">My account</string>
+
+    <string name="tags_bottom_title">Categories</string>
+    <string name="tags_top_title">My categories</string>
+
+    <string name="settings_bottom_title">Settings</string>
+    <string name="settings_top_title">Settings</string>
+
+    <string name="amount_with_currency">%1$s %2$s</string>
+</resources>

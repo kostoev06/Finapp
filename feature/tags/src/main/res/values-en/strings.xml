@@ -1,0 +1,4 @@
+<resources>
+    <string name="tags_top_title">My categories</string>
+    <string name="tags_search_hint">Find a category</string>
+</resources>
