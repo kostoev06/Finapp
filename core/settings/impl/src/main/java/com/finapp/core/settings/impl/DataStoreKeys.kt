@@ -10,4 +10,5 @@ internal object DataStoreKeys {
     val PASSCODE_SALT = stringPreferencesKey("passcode_salt")
     val LANGUAGE = stringPreferencesKey("language")
     val SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
+    val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
 }

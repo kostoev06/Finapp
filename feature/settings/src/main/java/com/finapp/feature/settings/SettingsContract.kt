@@ -12,5 +12,6 @@ data class SettingsScreenUiState(
     val brandColor: BrandColorOption = BrandColorOption.GREEN,
     val passcodeIsSet: Boolean = false,
     val language: LanguageOption = LanguageOption.RU,
-    val soundEnabled: Boolean = true
+    val soundEnabled: Boolean = true,
+    val hapticsEnabled: Boolean = true
 )

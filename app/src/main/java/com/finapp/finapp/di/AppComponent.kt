@@ -14,6 +14,7 @@ import com.finapp.feature.tags.di.FeatureTagsComponent
 import com.finapp.finapp.FinappApplication
 import com.finapp.core.work.transaction.di.FinappWorkComponent
 import com.finapp.core.work.transaction.di.WorkSupportModule
+import com.finapp.feature.common.haptics.HapticsPlayer
 import com.finapp.feature.common.sound.SoundPlayer
 import com.finapp.feature.settings.di.FeatureSettingsComponent
 import com.finapp.finapp.theme.di.FeatureMainComponent
@@ -72,4 +73,6 @@ interface AppComponent {
     fun workerComponentBuilder(): FinappWorkComponent.Builder
 
     fun soundPlayer(): SoundPlayer
+
+    fun hapticsPlayer(): HapticsPlayer
 }

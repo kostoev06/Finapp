@@ -14,6 +14,8 @@ sealed class SettingsNavigationDestination {
     data object Sync : SettingsNavigationDestination()
     @Serializable
     data object Sound : SettingsNavigationDestination()
+    @Serializable
+    data object Haptics : SettingsNavigationDestination()
 
     /**
      * Экран код-пароля. [mode] определяет начальный режим:

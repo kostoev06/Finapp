@@ -5,6 +5,7 @@ import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
 import com.finapp.feature.settings.SettingsViewModel
 import com.finapp.feature.settings.about.AboutViewModel
+import com.finapp.feature.settings.haptics.HapticsViewModel
 import com.finapp.feature.settings.passcode.PasscodeViewModel
 import com.finapp.feature.settings.sound.SoundViewModel
 import com.finapp.feature.settings.sync.SyncViewModel
@@ -38,4 +39,9 @@ interface SettingsViewModelsModule {
     @IntoMap
     @ViewModelKey(SoundViewModel::class)
     fun bindSound(factory: SoundViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HapticsViewModel::class)
+    fun bindHaptics(factory: HapticsViewModel.Factory): ViewModelAssistedFactory<out ViewModel>
 }

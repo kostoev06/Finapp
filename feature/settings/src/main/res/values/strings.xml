@@ -40,4 +40,11 @@
     <string name="sound_test_error">Тестовая ошибка</string>
     <string name="sound_state_on">Включены</string>
     <string name="sound_state_off">Выключены</string>
+
+    <string name="haptics_title">Хаптики</string>
+    <string name="haptics_enabled_label">Тактильная отдача</string>
+    <string name="haptics_test_success">Тестовый успех</string>
+    <string name="haptics_test_error">Тестовая ошибка</string>
+    <string name="haptics_state_on">Включены</string>
+    <string name="haptics_state_off">Выключены</string>
 </resources>

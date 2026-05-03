@@ -40,4 +40,11 @@
     <string name="sound_test_error">Test error</string>
     <string name="sound_state_on">On</string>
     <string name="sound_state_off">Off</string>
+
+    <string name="haptics_title">Haptics</string>
+    <string name="haptics_enabled_label">Haptic feedback</string>
+    <string name="haptics_test_success">Test success</string>
+    <string name="haptics_test_error">Test error</string>
+    <string name="haptics_state_on">On</string>
+    <string name="haptics_state_off">Off</string>
 </resources>

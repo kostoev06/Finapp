@@ -27,6 +27,7 @@ fun SettingsRoute(
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
     onOpenSound: () -> Unit,
+    onOpenHaptics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -39,6 +40,7 @@ fun SettingsRoute(
         onOpenLanguage = onOpenLanguage,
         onOpenSync = onOpenSync,
         onOpenSound = onOpenSound,
+        onOpenHaptics = onOpenHaptics,
         onSelectThemeMode = viewModel::onThemeModeSelect,
         modifier = modifier
     )
@@ -54,6 +56,7 @@ fun SettingsScreen(
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
     onOpenSound: () -> Unit,
+    onOpenHaptics: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -65,6 +68,7 @@ fun SettingsScreen(
         onOpenLanguage = onOpenLanguage,
         onOpenSync = onOpenSync,
         onOpenSound = onOpenSound,
+        onOpenHaptics = onOpenHaptics,
         onSelectThemeMode = onSelectThemeMode,
         onOpenAbout = onOpenAbout,
         modifier = modifier
@@ -81,6 +85,7 @@ fun SettingsContent(
     onOpenLanguage: () -> Unit,
     onOpenSync: () -> Unit,
     onOpenSound: () -> Unit,
+    onOpenHaptics: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -138,6 +143,10 @@ fun SettingsContent(
 
             FinappListItem(
                 headlineContent = { Text(stringResource(R.string.settings_haptics)) },
+                subtitle = stringResource(
+                    if (state.hapticsEnabled) R.string.haptics_state_on
+                    else R.string.haptics_state_off
+                ),
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_right_2),
@@ -145,8 +154,8 @@ fun SettingsContent(
                     )
                 },
                 clickable = true,
-                onClick = { /* TODO */ },
-                height = 56
+                onClick = onOpenHaptics,
+                height = 72
             )
 
             FinappListItem(

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.finapp.core.settings.api.repository.HapticsSettingsRepository
 import com.finapp.core.settings.api.repository.LanguageRepository
 import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.core.settings.api.repository.SoundSettingsRepository
@@ -29,6 +30,7 @@ class SettingsViewModel @AssistedInject constructor(
     private val languageRepo: LanguageRepository,
     passcodeRepo: PasscodeRepository,
     soundRepo: SoundSettingsRepository,
+    hapticsRepo: HapticsSettingsRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,9 +38,17 @@ class SettingsViewModel @AssistedInject constructor(
         repo.settings,
         passcodeRepo.isSet,
         languageRepo.language,
-        soundRepo.enabled
-    ) { theme, passcodeIsSet, language, soundEnabled ->
-        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet, language, soundEnabled)
+        soundRepo.enabled,
+        hapticsRepo.enabled
+    ) { theme, passcodeIsSet, language, soundEnabled, hapticsEnabled ->
+        SettingsScreenUiState(
+            themeMode = theme.themeMode,
+            brandColor = theme.brandColor,
+            passcodeIsSet = passcodeIsSet,
+            language = language,
+            soundEnabled = soundEnabled,
+            hapticsEnabled = hapticsEnabled
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsScreenUiState())
 
     fun onDarkThemeToggle(enabled: Boolean) {
