@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.core.settings.api.model.LanguageOption
 import com.finapp.core.settings.api.model.ThemeMode
 import com.finapp.feature.common.component.FinappListItem
 import com.finapp.feature.common.component.FinappTopAppBar
@@ -23,6 +24,7 @@ fun SettingsRoute(
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
+    onOpenLanguage: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -32,6 +34,7 @@ fun SettingsRoute(
         onOpenColorPicker = onOpenColorPicker,
         onOpenAbout = onOpenAbout,
         onOpenPasscode = onOpenPasscode,
+        onOpenLanguage = onOpenLanguage,
         onSelectThemeMode = viewModel::onThemeModeSelect,
         modifier = modifier
     )
@@ -44,6 +47,7 @@ fun SettingsScreen(
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
+    onOpenLanguage: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -52,6 +56,7 @@ fun SettingsScreen(
         onDarkThemeToggle = onDarkThemeToggle,
         onOpenColorPicker = onOpenColorPicker,
         onOpenPasscode = onOpenPasscode,
+        onOpenLanguage = onOpenLanguage,
         onSelectThemeMode = onSelectThemeMode,
         onOpenAbout = onOpenAbout,
         modifier = modifier
@@ -65,6 +70,7 @@ fun SettingsContent(
     onOpenColorPicker: () -> Unit,
     onOpenAbout: () -> Unit,
     onOpenPasscode: (PasscodeNavMode) -> Unit,
+    onOpenLanguage: () -> Unit,
     onSelectThemeMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -80,7 +86,7 @@ fun SettingsContent(
         Column(modifier = Modifier.padding(innerPadding)) {
 
             FinappListItem(
-                headlineContent = { Text("Тёмная тема") },
+                headlineContent = { Text(stringResource(R.string.settings_dark_theme)) },
                 firstTrailingContent = {
                     Switch(
                         checked = state.themeMode == ThemeMode.DARK,
@@ -91,7 +97,7 @@ fun SettingsContent(
             )
 
             FinappListItem(
-                headlineContent = { Text("Основной цвет") },
+                headlineContent = { Text(stringResource(R.string.settings_brand_color)) },
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_right_2),
@@ -104,11 +110,11 @@ fun SettingsContent(
             )
 
             listOf(
-                "Звуки",
-                "Хаптики"
-            ).forEach { label ->
+                R.string.settings_sounds,
+                R.string.settings_haptics
+            ).forEach { labelRes ->
                 FinappListItem(
-                    headlineContent = { Text(label) },
+                    headlineContent = { Text(stringResource(labelRes)) },
                     trailingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_arrow_right_2),
@@ -122,8 +128,11 @@ fun SettingsContent(
             }
 
             FinappListItem(
-                headlineContent = { Text("Код пароль") },
-                subtitle = if (state.passcodeIsSet) "Установлен" else "Не установлен",
+                headlineContent = { Text(stringResource(R.string.settings_passcode)) },
+                subtitle = stringResource(
+                    if (state.passcodeIsSet) R.string.settings_passcode_set
+                    else R.string.settings_passcode_unset
+                ),
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_right_2),
@@ -140,26 +149,35 @@ fun SettingsContent(
                 height = 72
             )
 
-            listOf(
-                "Синхронизация",
-                "Язык"
-            ).forEach { label ->
-                FinappListItem(
-                    headlineContent = { Text(label) },
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_right_2),
-                            contentDescription = null
-                        )
-                    },
-                    clickable = true,
-                    onClick = { /* TODO */ },
-                    height = 56
-                )
-            }
+            FinappListItem(
+                headlineContent = { Text(stringResource(R.string.settings_sync)) },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                        contentDescription = null
+                    )
+                },
+                clickable = true,
+                onClick = { /* TODO */ },
+                height = 56
+            )
 
             FinappListItem(
-                headlineContent = { Text("О программе") },
+                headlineContent = { Text(stringResource(R.string.settings_language)) },
+                subtitle = state.language.nativeName(),
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_right_2),
+                        contentDescription = null
+                    )
+                },
+                clickable = true,
+                onClick = onOpenLanguage,
+                height = 72
+            )
+
+            FinappListItem(
+                headlineContent = { Text(stringResource(R.string.settings_about)) },
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_right_2),
@@ -172,4 +190,9 @@ fun SettingsContent(
             )
         }
     }
+}
+
+private fun LanguageOption.nativeName(): String = when (this) {
+    LanguageOption.RU -> "Русский"
+    LanguageOption.EN -> "English"
 }

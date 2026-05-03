@@ -31,8 +31,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.feature.common.text.asString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -59,13 +61,14 @@ fun IncomeEditRoute(
     var saveButtonEnabled by remember { mutableStateOf(true) }
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val ctx = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is IncomeEditUiEvent.ShowError -> {
                     snackbarHostState.showSnackbar(
-                        message = "${event.title}: ${event.message}"
+                        message = "${event.title.asString(ctx)}: ${event.message.asString(ctx)}"
                     )
                 }
 
@@ -174,7 +177,7 @@ fun IncomeEditContent(
     if (state.isCategoryDialogVisible) {
         AlertDialog(
             onDismissRequest = onCancelDialog,
-            title = { Text("Выберите статью") },
+            title = { Text(stringResource(R.string.dialog_choose_category)) },
             text = {
                 Column {
                     state.categoriesListState.forEach { category ->
@@ -193,7 +196,7 @@ fun IncomeEditContent(
             },
             confirmButton = {
                 TextButton(onClick = onCancelDialog) {
-                    Text("Отмена")
+                    Text(stringResource(R.string.cancel))
                 }
             },
             modifier = Modifier.padding(16.dp)
@@ -229,13 +232,13 @@ fun IncomeEditContent(
     ) { inner ->
         Column(Modifier.padding(inner)) {
             FinappListItem(
-                headlineContent = { Text("Счет") },
+                headlineContent = { Text(stringResource(R.string.account_label)) },
                 firstTrailingContent = {
                     Text(state.accountFieldState)
                 }
             )
             FinappListItem(
-                headlineContent = { Text("Статья") },
+                headlineContent = { Text(stringResource(R.string.category_label)) },
                 firstTrailingContent = {
                     Text(state.currentCategoryState.name)
                 },
@@ -279,13 +282,13 @@ fun IncomeEditContent(
                 }
             )
             FinappListItem(
-                headlineContent = { Text("Дата") },
+                headlineContent = { Text(stringResource(R.string.date_label)) },
                 firstTrailingContent = { Text(state.dateState.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))) },
                 clickable = true,
                 onClick = onClickDate,
             )
             FinappListItem(
-                headlineContent = { Text("Время") },
+                headlineContent = { Text(stringResource(R.string.time_label)) },
                 firstTrailingContent = { Text(state.timeState.format(DateTimeFormatter.ofPattern("HH:mm"))) },
                 clickable = true,
                 onClick = onClickTime,
@@ -308,7 +311,7 @@ fun IncomeEditContent(
                             ) {
                                 if (state.commentFieldState.isEmpty()) {
                                     Text(
-                                        "Комментарий",
+                                        stringResource(R.string.comment_label),
                                         style = MaterialTheme.typography.bodyLarge.copy(
                                             color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
                                         )

@@ -30,4 +30,5 @@ dependencies {
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.work.runtime.ktx)
+    implementation(libs.androidx.appcompat)
 }

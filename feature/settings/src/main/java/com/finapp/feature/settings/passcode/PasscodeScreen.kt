@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,7 +66,7 @@ fun PasscodeScreen(
     Scaffold(
         topBar = {
             FinappTopAppBar(
-                title = { Text(state.mode.topTitle()) },
+                title = { Text(stringResource(state.mode.topTitleRes())) },
                 navigationIcon = {
                     if (showBack) {
                         IconButton(onClick = onBack) {
@@ -93,16 +94,16 @@ fun PasscodeScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 Text(
-                    text = state.mode.prompt(),
+                    text = stringResource(state.mode.promptRes()),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center
                 )
                 PasscodeDots(total = PASSCODE_LENGTH, filled = state.entered.length)
                 Box(modifier = Modifier.height(20.dp), contentAlignment = Alignment.Center) {
-                    if (state.error != null) {
+                    state.errorRes?.let { res ->
                         Text(
-                            text = state.error,
+                            text = stringResource(res),
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
@@ -120,15 +121,15 @@ fun PasscodeScreen(
     }
 }
 
-private fun PasscodeMode.topTitle(): String = when (this) {
-    PasscodeMode.SetupNew, PasscodeMode.SetupConfirm -> "Установка кода"
-    PasscodeMode.Verify -> "Введите код"
-    PasscodeMode.Disable -> "Снятие кода"
+private fun PasscodeMode.topTitleRes(): Int = when (this) {
+    PasscodeMode.SetupNew, PasscodeMode.SetupConfirm -> com.finapp.feature.settings.R.string.passcode_title_setup
+    PasscodeMode.Verify -> com.finapp.feature.settings.R.string.passcode_title_verify
+    PasscodeMode.Disable -> com.finapp.feature.settings.R.string.passcode_title_disable
 }
 
-private fun PasscodeMode.prompt(): String = when (this) {
-    PasscodeMode.SetupNew -> "Придумайте 4-значный код"
-    PasscodeMode.SetupConfirm -> "Повторите код"
-    PasscodeMode.Verify -> "Введите код-пароль"
-    PasscodeMode.Disable -> "Введите текущий код"
+private fun PasscodeMode.promptRes(): Int = when (this) {
+    PasscodeMode.SetupNew -> com.finapp.feature.settings.R.string.passcode_prompt_setup_new
+    PasscodeMode.SetupConfirm -> com.finapp.feature.settings.R.string.passcode_prompt_setup_confirm
+    PasscodeMode.Verify -> com.finapp.feature.settings.R.string.passcode_prompt_verify
+    PasscodeMode.Disable -> com.finapp.feature.settings.R.string.passcode_prompt_disable
 }

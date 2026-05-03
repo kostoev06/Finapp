@@ -4,4 +4,9 @@
     <string name="currency_symbol_eur">€</string>
     <string name="currency_symbol_empty"></string>
     <string name="cancel">Отмена</string>
+
+    <string name="error">Ошибка</string>
+    <string name="error_with_code">Ошибка %1$d</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="error_invalid_amount">Неверный формат суммы</string>
 </resources>

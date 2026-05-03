@@ -126,7 +126,7 @@ fun ExpensesHistoryContent(
     Scaffold(
         topBar = {
             FinappTopAppBar(
-                title = { Text("Моя история") },
+                title = { Text(stringResource(R.string.my_history)) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -149,7 +149,7 @@ fun ExpensesHistoryContent(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             FinappListItem(
-                headlineContent = { Text("Начало") },
+                headlineContent = { Text(stringResource(R.string.start)) },
                 firstTrailingContent = {
                     Text(
                         state.startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
@@ -163,7 +163,7 @@ fun ExpensesHistoryContent(
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Конец") },
+                headlineContent = { Text(stringResource(R.string.end)) },
                 firstTrailingContent = {
                     Text(
                         state.endDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
@@ -177,7 +177,7 @@ fun ExpensesHistoryContent(
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Сумма") },
+                headlineContent = { Text(stringResource(R.string.amount)) },
                 firstTrailingContent = {
                     Text(
                         stringResource(

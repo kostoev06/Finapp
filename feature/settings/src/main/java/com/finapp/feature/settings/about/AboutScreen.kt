@@ -65,17 +65,17 @@ fun AboutScreen(
     ) { inner ->
         Column(Modifier.padding(inner)) {
             FinappListItem(
-                headlineContent = { Text("Версия", fontWeight = FontWeight.Medium) },
+                headlineContent = { Text(stringResource(R.string.about_version), fontWeight = FontWeight.Medium) },
                 firstTrailingContent = { Text(state.versionName) },
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Версия (code)") },
+                headlineContent = { Text(stringResource(R.string.about_version_code)) },
                 firstTrailingContent = { Text(state.versionCode.toString()) },
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Последнее обновление") },
+                headlineContent = { Text(stringResource(R.string.about_last_update)) },
                 firstTrailingContent = { Text(dateText) },
                 height = 56
             )
@@ -85,7 +85,8 @@ fun AboutScreen(
 
 @Composable
 private fun rememberDate(millis: Long): String {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale("ru"))
+    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
+    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy", locale)
     val zdt = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault())
     return formatter.format(zdt)
 }

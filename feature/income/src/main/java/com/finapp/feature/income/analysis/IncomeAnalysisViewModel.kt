@@ -10,6 +10,8 @@ import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.text.UiText
+import com.finapp.feature.common.utils.toErrorTexts
 import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -30,7 +32,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 sealed class IncomeAnalysisUiEvent {
-    data class ShowError(val title: String, val message: String) : IncomeAnalysisUiEvent()
+    data class ShowError(val title: UiText, val message: UiText) : IncomeAnalysisUiEvent()
 }
 
 /**
@@ -111,22 +113,8 @@ class IncomeAnalysisViewModel @AssistedInject constructor(
                         .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                     updateUiState(transactionRepository.getLocalTransactionsByPeriod(startIso = todayStart, endIso = todayEnd))
 
-                    onError {
-                        _events.emit(
-                            IncomeAnalysisUiEvent.ShowError(
-                                title = "Ошибка $code",
-                                message = errorBody ?: "Неизвестная ошибка"
-                            )
-                        )
-                    }
-                    onException {
-                        _events.emit(
-                            IncomeAnalysisUiEvent.ShowError(
-                                title = "Ошибка",
-                                message = "Неизвестная ошибка"
-                            )
-                        )
-                    }
+                    val (title, message) = outcome.toErrorTexts()
+                    _events.emit(IncomeAnalysisUiEvent.ShowError(title, message))
                 }
             }
     }

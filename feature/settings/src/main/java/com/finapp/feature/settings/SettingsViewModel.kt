@@ -1,13 +1,17 @@
 package com.finapp.feature.settings
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.finapp.core.settings.api.repository.LanguageRepository
 import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.core.settings.api.repository.ThemeSettingsRepository
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import androidx.lifecycle.viewModelScope
 import com.finapp.core.settings.api.model.BrandColorOption
+import com.finapp.core.settings.api.model.LanguageOption
 import com.finapp.core.settings.api.model.ThemeMode
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
@@ -21,12 +25,17 @@ import kotlinx.coroutines.launch
  */
 class SettingsViewModel @AssistedInject constructor(
     private val repo: ThemeSettingsRepository,
+    private val languageRepo: LanguageRepository,
     passcodeRepo: PasscodeRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val uiState = combine(repo.settings, passcodeRepo.isSet) { theme, passcodeIsSet ->
-        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet)
+    val uiState = combine(
+        repo.settings,
+        passcodeRepo.isSet,
+        languageRepo.language
+    ) { theme, passcodeIsSet, language ->
+        SettingsScreenUiState(theme.themeMode, theme.brandColor, passcodeIsSet, language)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SettingsScreenUiState())
 
     fun onDarkThemeToggle(enabled: Boolean) {
@@ -41,6 +50,16 @@ class SettingsViewModel @AssistedInject constructor(
 
     fun onBrandColorSelect(option: BrandColorOption) {
         viewModelScope.launch { repo.setBrandColor(option) }
+    }
+
+    fun onLanguageSelect(option: LanguageOption) {
+        viewModelScope.launch {
+            languageRepo.set(option)
+            // Меняет локаль и пересоздаёт текущую Activity, чтобы строки перерисовались.
+            AppCompatDelegate.setApplicationLocales(
+                LocaleListCompat.forLanguageTags(option.tag)
+            )
+        }
     }
 
     @AssistedFactory

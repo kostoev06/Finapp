@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":feature:common"))
     implementation(project(":core:settings:impl"))
     implementation(project(":core:data:api"))
+    implementation(libs.androidx.appcompat)
 }

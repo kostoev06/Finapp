@@ -1,4 +1,30 @@
 <resources>
     <string name="settings_top_title">Настройки</string>
+
+    <string name="settings_dark_theme">Тёмная тема</string>
+    <string name="settings_brand_color">Основной цвет</string>
+    <string name="settings_sounds">Звуки</string>
+    <string name="settings_haptics">Хаптики</string>
+    <string name="settings_passcode">Код-пароль</string>
+    <string name="settings_passcode_set">Установлен</string>
+    <string name="settings_passcode_unset">Не установлен</string>
+    <string name="settings_sync">Синхронизация</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_about">О программе</string>
+
     <string name="about_title">О программе</string>
+    <string name="about_version">Версия</string>
+    <string name="about_version_code">Версия (code)</string>
+    <string name="about_last_update">Последнее обновление</string>
+
+    <string name="passcode_title_setup">Установка кода</string>
+    <string name="passcode_title_verify">Введите код</string>
+    <string name="passcode_title_disable">Снятие кода</string>
+    <string name="passcode_prompt_setup_new">Придумайте 4-значный код</string>
+    <string name="passcode_prompt_setup_confirm">Повторите код</string>
+    <string name="passcode_prompt_verify">Введите код-пароль</string>
+    <string name="passcode_prompt_disable">Введите текущий код</string>
+    <string name="passcode_error_mismatch">Коды не совпадают</string>
+    <string name="passcode_error_wrong">Неверный код</string>
+    <string name="passcode_keypad_backspace">Стереть</string>
 </resources>

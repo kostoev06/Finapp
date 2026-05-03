@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.settings.R
 import com.finapp.feature.settings.navigation.PasscodeNavMode
 import com.finapp.feature.settings.navigation.SettingsNavigationDestination
 import dagger.assisted.Assisted
@@ -16,9 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-private const val ERROR_MISMATCH = "Коды не совпадают"
-private const val ERROR_WRONG = "Неверный код"
 
 class PasscodeViewModel @AssistedInject constructor(
     private val passcodeRepository: PasscodeRepository,
@@ -41,7 +39,7 @@ class PasscodeViewModel @AssistedInject constructor(
         val current = _uiState.value
         if (current.finished || current.entered.length >= PASSCODE_LENGTH) return
         val next = current.entered + digit
-        _uiState.update { it.copy(entered = next, error = null) }
+        _uiState.update { it.copy(entered = next, errorRes = null) }
         if (next.length == PASSCODE_LENGTH) {
             handleComplete(next)
         }
@@ -50,7 +48,7 @@ class PasscodeViewModel @AssistedInject constructor(
     fun onBackspace() {
         _uiState.update {
             if (it.finished || it.entered.isEmpty()) it
-            else it.copy(entered = it.entered.dropLast(1), error = null)
+            else it.copy(entered = it.entered.dropLast(1), errorRes = null)
         }
     }
 
@@ -59,7 +57,7 @@ class PasscodeViewModel @AssistedInject constructor(
             PasscodeMode.SetupNew -> {
                 setupBuffer = code
                 _uiState.update {
-                    it.copy(mode = PasscodeMode.SetupConfirm, entered = "", error = null)
+                    it.copy(mode = PasscodeMode.SetupConfirm, entered = "", errorRes = null)
                 }
             }
             PasscodeMode.SetupConfirm -> {
@@ -74,7 +72,7 @@ class PasscodeViewModel @AssistedInject constructor(
                         it.copy(
                             mode = PasscodeMode.SetupNew,
                             entered = "",
-                            error = ERROR_MISMATCH
+                            errorRes = R.string.passcode_error_mismatch
                         )
                     }
                 }
@@ -84,7 +82,7 @@ class PasscodeViewModel @AssistedInject constructor(
                     if (passcodeRepository.verify(code)) {
                         _uiState.update { it.copy(finished = true) }
                     } else {
-                        _uiState.update { it.copy(entered = "", error = ERROR_WRONG) }
+                        _uiState.update { it.copy(entered = "", errorRes = R.string.passcode_error_wrong) }
                     }
                 }
             }
@@ -94,7 +92,7 @@ class PasscodeViewModel @AssistedInject constructor(
                         passcodeRepository.clear()
                         _uiState.update { it.copy(finished = true) }
                     } else {
-                        _uiState.update { it.copy(entered = "", error = ERROR_WRONG) }
+                        _uiState.update { it.copy(entered = "", errorRes = R.string.passcode_error_wrong) }
                     }
                 }
             }

@@ -125,7 +125,7 @@ fun IncomeHistoryContent(
     Scaffold(
         topBar = {
             FinappTopAppBar(
-                title = { Text("Моя история") },
+                title = { Text(stringResource(R.string.my_history)) },
                 navigationIcon = {
                     IconButton(
                         onClick = {

@@ -11,7 +11,7 @@ data class AccountScreenUiState(
     val balanceState: BalanceItemUiState = BalanceItemUiState(),
     val currencyState: CurrencyItemUiState = CurrencyItemUiState(),
     val profitItemListUiState: ImmutableList<ProfitItemUiState> = persistentListOf(),
-    val lastSyncTextState: String = "Никогда"
+    val lastSyncTextState: String? = null
 )
 
 /**

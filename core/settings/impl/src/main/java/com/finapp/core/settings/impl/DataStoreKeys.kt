@@ -7,4 +7,5 @@ internal object DataStoreKeys {
     val BRAND_COLOR = stringPreferencesKey("brand_color")
     val PASSCODE_HASH = stringPreferencesKey("passcode_hash")
     val PASSCODE_SALT = stringPreferencesKey("passcode_salt")
+    val LANGUAGE = stringPreferencesKey("language")
 }

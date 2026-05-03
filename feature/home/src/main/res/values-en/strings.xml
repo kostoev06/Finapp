@@ -1,0 +1,7 @@
+<resources>
+    <string name="expenses_bottom_title">Expenses</string>
+    <string name="income_bottom_title">Income</string>
+    <string name="account_bottom_title">Account</string>
+    <string name="tags_bottom_title">Categories</string>
+    <string name="settings_bottom_title">Settings</string>
+</resources>

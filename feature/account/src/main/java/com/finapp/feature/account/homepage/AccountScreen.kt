@@ -26,8 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.finapp.feature.common.text.asString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -65,13 +67,14 @@ fun AccountRoute(
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val ctx = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is AccountUiEvent.ShowError -> {
                     snackbarHostState.showSnackbar(
-                        message = "${event.title}: ${event.message}"
+                        message = "${event.title.asString(ctx)}: ${event.message.asString(ctx)}"
                     )
                 }
             }
@@ -159,8 +162,10 @@ fun AccountContent(
                 height = 56
             )
             FinappListItem(
-                headlineContent = { Text("Последняя синхронизация") },
-                firstTrailingContent = { Text(state.lastSyncTextState) },
+                headlineContent = { Text(stringResource(R.string.account_last_sync)) },
+                firstTrailingContent = {
+                    Text(state.lastSyncTextState ?: stringResource(R.string.account_never_synced))
+                },
                 height = 56
             )
             ProfitAnalysisChart(state)

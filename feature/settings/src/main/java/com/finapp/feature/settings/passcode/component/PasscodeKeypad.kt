@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +51,7 @@ fun PasscodeKeypad(
                         '<' -> KeypadCircleButton(onClick = onBackspace) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_arrow_back),
-                                contentDescription = "Стереть"
+                                contentDescription = stringResource(R.string.passcode_keypad_backspace)
                             )
                         }
                         else -> KeypadCircleButton(onClick = { onDigit(ch) }) {

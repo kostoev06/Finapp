@@ -11,7 +11,10 @@ import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.feature.account.BuildConfig
 import com.finapp.feature.account.homepage.BalanceItemUiState
 import com.finapp.feature.account.homepage.CurrencyItemUiState
+import com.finapp.feature.common.R
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.text.UiText
+import com.finapp.feature.common.utils.toErrorTexts
 import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -26,7 +29,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed class AccountEditUiEvent {
-    data class ShowError(val title: String, val message: String) : AccountEditUiEvent()
+    data class ShowError(val title: UiText, val message: UiText) : AccountEditUiEvent()
     data object OnSaveSuccess : AccountEditUiEvent()
 }
 
@@ -55,22 +58,8 @@ class AccountEditViewModel @AssistedInject constructor(
                     }
                     onFailure {
                         accountRepository.getLocalAccount()?.let { updateUiState(it) }
-                        onError {
-                            _events.emit(
-                                AccountEditUiEvent.ShowError(
-                                    title = "Ошибка $code",
-                                    message = errorBody ?: "Неизвестная ошибка"
-                                )
-                            )
-                        }
-                        onException {
-                            _events.emit(
-                                AccountEditUiEvent.ShowError(
-                                    title = "Ошибка",
-                                    message = "Неизвестная ошибка"
-                                )
-                            )
-                        }
+                        val (title, message) = outcome.toErrorTexts()
+                        _events.emit(AccountEditUiEvent.ShowError(title, message))
                     }
                 }
         }
@@ -124,8 +113,8 @@ class AccountEditViewModel @AssistedInject constructor(
             if (_uiState.value.balanceFieldState.text.isEmpty()) {
                 _events.emit(
                     AccountEditUiEvent.ShowError(
-                        title = "Ошибка",
-                        message = "Неверный формат суммы"
+                        title = UiText.Resource(R.string.error),
+                        message = UiText.Resource(R.string.error_invalid_amount)
                     )
                 )
             } else {
@@ -142,24 +131,9 @@ class AccountEditViewModel @AssistedInject constructor(
                         currencyRepository.setCurrency(_uiState.value.currencyFieldState.currency.code)
                     }
                     onFailure {
-                        onError {
-                            _events.emit(
-                                AccountEditUiEvent.ShowError(
-                                    title = "Ошибка $code",
-                                    message = errorBody ?: "Неизвестная ошибка"
-                                )
-                            )
-                        }
-                        onException {
-                            _events.emit(
-                                AccountEditUiEvent.ShowError(
-                                    title = "Ошибка",
-                                    message = "Неизвестная ошибка"
-                                )
-                            )
-                        }
+                        val (title, message) = outcome.toErrorTexts()
+                        _events.emit(AccountEditUiEvent.ShowError(title, message))
                     }
-
                 }
             }
         }

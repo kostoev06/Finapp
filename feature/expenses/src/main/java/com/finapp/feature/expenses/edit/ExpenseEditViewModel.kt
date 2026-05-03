@@ -13,7 +13,10 @@ import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.TransactionRepository
+import com.finapp.feature.common.R
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.text.UiText
+import com.finapp.feature.common.utils.toErrorTexts
 import com.finapp.feature.expenses.navigation.ExpensesNavigationDestination
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -34,7 +37,7 @@ import java.time.LocalTime
 
 
 sealed class ExpenseEditUiEvent {
-    data class ShowError(val title: String, val message: String) : ExpenseEditUiEvent()
+    data class ShowError(val title: UiText, val message: UiText) : ExpenseEditUiEvent()
     data object OnSaveSuccess : ExpenseEditUiEvent()
 }
 
@@ -79,23 +82,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
                             if (localData != null) {
                                 updateUiState(localData)
                             }
-
-                            onError {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка $code",
-                                        message = errorBody ?: "Неизвестная ошибка"
-                                    )
-                                )
-                            }
-                            onException {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка",
-                                        message = "Неизвестная ошибка"
-                                    )
-                                )
-                            }
+                            val (title, message) = outcome.toErrorTexts()
+                            _events.emit(ExpenseEditUiEvent.ShowError(title, message))
                         }
                     }
             }
@@ -107,8 +95,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
                     else -> {
                         _events.emit(
                             ExpenseEditUiEvent.ShowError(
-                                title = "Ошибка",
-                                message = "Неизвестная ошибка"
+                                title = UiText.Resource(R.string.error),
+                                message = UiText.Resource(R.string.error_unknown)
                             )
                         )
                         accountRepository.getLocalAccount()?.name ?: ""
@@ -205,8 +193,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
             if (_uiState.value.amountFieldState.isEmpty()) {
                 _events.emit(
                     ExpenseEditUiEvent.ShowError(
-                        title = "Ошибка",
-                        message = "Неверный формат суммы"
+                        title = UiText.Resource(R.string.error),
+                        message = UiText.Resource(R.string.error_invalid_amount)
                     )
                 )
             } else {
@@ -244,22 +232,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
                                 )
                             )
                             _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
-                            onError {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка $code",
-                                        message = errorBody ?: "Неизвестная ошибка"
-                                    )
-                                )
-                            }
-                            onException {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка",
-                                        message = "Неизвестная ошибка"
-                                    )
-                                )
-                            }
+                            val (title, message) = outcome.toErrorTexts()
+                            _events.emit(ExpenseEditUiEvent.ShowError(title, message))
                         }
                     }
                 } else {
@@ -306,22 +280,8 @@ class ExpenseEditViewModel @AssistedInject constructor(
                             }
 
                             _events.emit(ExpenseEditUiEvent.OnSaveSuccess)
-                            onError {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка $code",
-                                        message = errorBody ?: "Неизвестная ошибка"
-                                    )
-                                )
-                            }
-                            onException {
-                                _events.emit(
-                                    ExpenseEditUiEvent.ShowError(
-                                        title = "Ошибка",
-                                        message = "Неизвестная ошибка"
-                                    )
-                                )
-                            }
+                            val (title, message) = outcome.toErrorTexts()
+                            _events.emit(ExpenseEditUiEvent.ShowError(title, message))
                         }
                     }
                 }

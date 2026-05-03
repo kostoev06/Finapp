@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.finapp.feature.settings.BrandColorPickerRoute
+import com.finapp.feature.settings.LanguagePickerRoute
 import com.finapp.feature.settings.SettingsRoute
 import com.finapp.feature.settings.about.AboutRoute
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
@@ -39,6 +40,14 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onDone = { navController.popBackStack() }
         )
     }
+    composable<SettingsNavigationDestination.LanguagePicker> {
+        val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
+        val settingsComponent = remember { settingsComponentBuilder.build() }
+        LanguagePickerRoute(
+            viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+            onBack = { navController.popBackStack() }
+        )
+    }
     composable<T> {
         val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
         val settingsComponent = remember { settingsComponentBuilder.build() }
@@ -46,7 +55,8 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
             onOpenColorPicker = { navController.navigate(SettingsNavigationDestination.BrandColorPicker) },
             onOpenAbout = { navController.navigate(SettingsNavigationDestination.About) },
-            onOpenPasscode = { mode -> navController.navigate(SettingsNavigationDestination.Passcode(mode)) }
+            onOpenPasscode = { mode -> navController.navigate(SettingsNavigationDestination.Passcode(mode)) },
+            onOpenLanguage = { navController.navigate(SettingsNavigationDestination.LanguagePicker) }
         )
     }
 }

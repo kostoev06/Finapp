@@ -1,5 +1,7 @@
 package com.finapp.feature.settings.passcode
 
+import androidx.annotation.StringRes
+
 const val PASSCODE_LENGTH = 4
 
 /**
@@ -20,6 +22,6 @@ enum class PasscodeMode {
 data class PasscodeUiState(
     val mode: PasscodeMode = PasscodeMode.Verify,
     val entered: String = "",
-    val error: String? = null,
+    @StringRes val errorRes: Int? = null,
     val finished: Boolean = false
 )
