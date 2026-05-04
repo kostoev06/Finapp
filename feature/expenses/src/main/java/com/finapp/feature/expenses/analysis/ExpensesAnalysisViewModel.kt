@@ -3,12 +3,10 @@ package com.finapp.feature.expenses.analysis
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.core.data.api.model.Transaction
-import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.CurrencyRepository
-import com.finapp.core.data.api.repository.TransactionRepository
+import com.finapp.core.domain.usecase.GetTransactionsByPeriodUseCase
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.text.UiText
 import com.finapp.feature.common.utils.toErrorTexts
@@ -23,13 +21,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 sealed class ExpensesAnalysisUiEvent {
     data class ShowError(val title: UiText, val message: UiText) : ExpensesAnalysisUiEvent()
@@ -39,8 +35,8 @@ sealed class ExpensesAnalysisUiEvent {
  * ViewModel для экрана анализа расходов.
  */
 class ExpensesAnalysisViewModel @AssistedInject constructor(
-    private val transactionRepository: TransactionRepository,
-    private val currencyRepository: CurrencyRepository,
+    private val getTransactionsByPeriod: GetTransactionsByPeriodUseCase,
+    currencyRepository: CurrencyRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -51,85 +47,38 @@ class ExpensesAnalysisViewModel @AssistedInject constructor(
     val events: SharedFlow<ExpensesAnalysisUiEvent> = _events.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            currencyRepository.currency.collect { currency ->
-                _uiState.update {
-                    it.copy(
-                        currency = CurrencyCode.from(currency)
-                    )
-                }
-            }
-        }
-        loadExpensesAnalysis()
+        currencyRepository.currency
+            .onEach { code -> _uiState.update { it.copy(currency = CurrencyCode.from(code)) } }
+            .launchIn(viewModelScope)
+        reload()
     }
 
     fun onChooseStartDate(date: LocalDate) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    startDate = date
-                )
-            }
-            fetchCategoriesSums()
-        }
+        _uiState.update { it.copy(isLoading = true, startDate = date) }
+        reload()
     }
 
     fun onChooseEndDate(date: LocalDate) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    endDate = date
-                )
-            }
-            fetchCategoriesSums()
-        }
+        _uiState.update { it.copy(isLoading = true, endDate = date) }
+        reload()
     }
 
-    private fun loadExpensesAnalysis() {
+    private fun reload() {
         viewModelScope.launch {
-            fetchCategoriesSums()
-        }
-    }
-
-    private suspend fun fetchCategoriesSums() {
-        transactionRepository
-            .fetchTransactionsByPeriod(
-                startDate = _uiState.value.startDate.toString(),
-                endDate = _uiState.value.endDate.toString()
-            )
-            .handleOutcome {
-                onSuccess {
-                    updateUiState(data)
-                    data.forEach { transactionRepository.insertSyncedLocalTransaction(it.asTransactionInfo()) }
-                }
-                onFailure {
-                    val todayStart = _uiState.value.startDate.atStartOfDay().atOffset(ZoneOffset.UTC).format(
-                        DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                    val todayEnd = LocalDateTime
-                        .of(_uiState.value.endDate, LocalTime.MAX)
-                        .atOffset(ZoneOffset.UTC)
-                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                    updateUiState(transactionRepository.getLocalTransactionsByPeriod(startIso = todayStart, endIso = todayEnd))
-
-                    val (title, message) = outcome.toErrorTexts()
-                    _events.emit(ExpensesAnalysisUiEvent.ShowError(title, message))
-                }
+            val state = _uiState.value
+            val result = getTransactionsByPeriod(start = state.startDate, end = state.endDate)
+            updateUiState(result.data)
+            result.error?.let { failure ->
+                val (title, message) = failure.toErrorTexts()
+                _events.emit(ExpensesAnalysisUiEvent.ShowError(title, message))
             }
+        }
     }
 
     private fun updateUiState(data: List<Transaction>) {
         val onlyExpenses = data.filter { !it.category.isIncome }
-
-        val total = onlyExpenses
-            .sumOf { it.amount }
-            .toFormattedString()
-
-        val grouped = onlyExpenses
-            .toAnalysisItems()
-            .toImmutableList()
-
+        val total = onlyExpenses.sumOf { it.amount }.toFormattedString()
+        val grouped = onlyExpenses.toAnalysisItems().toImmutableList()
         _uiState.update {
             it.copy(
                 isLoading = false,

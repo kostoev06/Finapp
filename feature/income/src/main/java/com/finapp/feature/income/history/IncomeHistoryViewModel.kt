@@ -3,12 +3,10 @@ package com.finapp.feature.income.history
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.core.data.api.model.Transaction
-import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.CurrencyRepository
-import com.finapp.core.data.api.repository.TransactionRepository
+import com.finapp.core.domain.usecase.GetTransactionsByPeriodUseCase
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.utils.toFormattedString
 import dagger.assisted.Assisted
@@ -18,20 +16,18 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 /**
  * ViewModel для экрана истории доходов.
  */
 class IncomeHistoryViewModel @AssistedInject constructor(
-    private val transactionRepository: TransactionRepository,
-    private val currencyRepository: CurrencyRepository,
+    private val getTransactionsByPeriod: GetTransactionsByPeriodUseCase,
+    currencyRepository: CurrencyRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -39,75 +35,44 @@ class IncomeHistoryViewModel @AssistedInject constructor(
     val uiState: StateFlow<IncomeHistoryScreenUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            currencyRepository.currency.collect { currency ->
-                _uiState.update {
-                    it.copy(
-                        currency = CurrencyCode.from(currency)
-                    )
-                }
-            }
-        }
+        currencyRepository.currency
+            .onEach { code -> _uiState.update { it.copy(currency = CurrencyCode.from(code)) } }
+            .launchIn(viewModelScope)
         loadIncomeHistory()
     }
 
     fun onChooseStartDate(startDate: LocalDate) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(startDate = startDate)
-            }
-            fetchTransactions()
-        }
+        _uiState.update { it.copy(startDate = startDate) }
+        reload()
     }
 
     fun onChooseEndDate(endDate: LocalDate) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(endDate = endDate)
-            }
-            fetchTransactions()
-        }
+        _uiState.update { it.copy(endDate = endDate) }
+        reload()
     }
 
     fun loadIncomeHistory() {
-        viewModelScope.launch {
-            fetchTransactions()
-        }
+        reload()
     }
 
-    private suspend fun fetchTransactions() {
-        transactionRepository.fetchTransactionsByPeriod(
-            startDate = _uiState.value.startDate.toString(),
-            endDate = _uiState.value.endDate.toString()
-        ).handleOutcome {
-            onSuccess {
-                updateUiState(data)
-                data.forEach { transactionRepository.insertSyncedLocalTransaction(it.asTransactionInfo()) }
-            }
-            onFailure {
-                val todayStart = _uiState.value.startDate.atStartOfDay().atOffset(ZoneOffset.UTC).format(
-                    DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                val todayEnd = LocalDateTime
-                    .of(_uiState.value.endDate, LocalTime.MAX)
-                    .atOffset(ZoneOffset.UTC)
-                    .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                updateUiState(transactionRepository.getLocalTransactionsByPeriod(startIso = todayStart, endIso = todayEnd))
-            }
+    private fun reload() {
+        viewModelScope.launch {
+            val state = _uiState.value
+            val result = getTransactionsByPeriod(start = state.startDate, end = state.endDate)
+            updateUiState(result.data)
         }
     }
 
     private fun updateUiState(data: List<Transaction>) {
-        val transactionsSum = data
-            .filter { transaction -> transaction.category.isIncome }
-            .sumOf { it.amount }
-            .toFormattedString()
+        val income = data.filter { it.category.isIncome }
+        val total = income.sumOf { it.amount }.toFormattedString()
         _uiState.update {
             it.copy(
-                summary = IncomeHistorySumUiState(totalAmount = transactionsSum),
-                items = data
-                    .filter { transaction -> transaction.category.isIncome }
-                    .sortedByDescending { transaction -> transaction.transactionDate }
-                    .map { transaction -> transaction.asIncomeHistoryItemUiState() }.toImmutableList()
+                summary = IncomeHistorySumUiState(totalAmount = total),
+                items = income
+                    .sortedByDescending { it.transactionDate }
+                    .map { it.asIncomeHistoryItemUiState() }
+                    .toImmutableList()
             )
         }
     }
