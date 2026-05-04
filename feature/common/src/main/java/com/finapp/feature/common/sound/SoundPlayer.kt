@@ -7,10 +7,8 @@ import com.finapp.core.settings.api.repository.SoundSettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,10 +36,11 @@ class SoundPlayerImpl @Inject constructor(
     soundSettingsRepository: SoundSettingsRepository
 ) : SoundPlayer {
 
-    // Первое значение читаем синхронно — иначе race с самым ранним play() (DataStore эмитит
-    // быстро, но не мгновенно). Дальше держим up-to-date snapshot через collect.
+    // Дефолт совпадает с дефолтом репозитория: пока DataStore не выдал первое значение,
+    // считаем звук включённым. Окно гонки — миллисекунды от старта приложения до первого
+    // emit'а, что для UX-фидбэка приемлемо.
     @Volatile
-    private var enabled: Boolean = runBlocking { soundSettingsRepository.enabled.first() }
+    private var enabled: Boolean = true
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 

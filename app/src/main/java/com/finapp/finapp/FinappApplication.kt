@@ -10,6 +10,7 @@ import com.finapp.finapp.di.AppComponent
 import com.finapp.finapp.di.DaggerAppComponent
 import com.finapp.core.work.transaction.DefaultWorkerFactory
 import com.finapp.core.work.transaction.SyncTransactionScheduler
+import com.finapp.finapp.startup.AppStartup
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -18,6 +19,7 @@ class FinappApplication : Application(), Configuration.Provider {
     lateinit var appComponent: AppComponent
     @Inject lateinit var scheduler: SyncTransactionScheduler
     @Inject lateinit var languageRepository: LanguageRepository
+    @Inject lateinit var appStartup: AppStartup
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +27,7 @@ class FinappApplication : Application(), Configuration.Provider {
         appComponent.inject(this)
         applySavedLocale()
         scheduler.schedulePeriodic()
+        appStartup.run()
     }
 
     /**

@@ -3,8 +3,8 @@ package com.finapp.core.data.impl.repository
 import com.finapp.core.common.outcome.Outcome
 import com.finapp.core.common.outcome.transform
 import com.finapp.core.data.api.model.Account
+import com.finapp.core.data.api.repository.AccountIdProvider
 import com.finapp.core.data.api.repository.AccountRepository
-import com.finapp.core.data.impl.BuildConfig
 import com.finapp.core.data.impl.model.asAccount
 import com.finapp.core.data.impl.model.asAccountEntity
 import com.finapp.core.data.impl.model.asAccountUpdateRequest
@@ -20,22 +20,23 @@ import javax.inject.Singleton
 @Singleton
 class AccountRepositoryImpl @Inject constructor(
     private val accountRemoteSource: AccountRemoteSource,
-    private val accountLocalSource: AccountLocalSource
+    private val accountLocalSource: AccountLocalSource,
+    private val accountIdProvider: AccountIdProvider
 ) : AccountRepository {
     override suspend fun fetchAccount(): Outcome<Account> =
-        accountRemoteSource.fetchAccountById(BuildConfig.ACCOUNT_ID)
+        accountRemoteSource.fetchAccountById(accountIdProvider.get())
             .transform { dto -> dto.asAccount() }
 
     override suspend fun updateAccount(
         account: Account
     ): Outcome<Account> {
         return accountRemoteSource
-            .updateAccountById(BuildConfig.ACCOUNT_ID, account.asAccountUpdateRequest())
+            .updateAccountById(accountIdProvider.get(), account.asAccountUpdateRequest())
             .transform { dto -> dto.asAccount() }
     }
 
     override suspend fun getLocalAccount(): Account? =
-        accountLocalSource.findById(BuildConfig.ACCOUNT_ID)?.asAccount()
+        accountLocalSource.findById(accountIdProvider.get())?.asAccount()
 
     override suspend fun insertLocalAccount(account: Account): Long =
         accountLocalSource.insert(account.asAccountEntity())

@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Account
 import com.finapp.core.data.api.model.CurrencyCode
+import com.finapp.core.data.api.repository.AccountIdProvider
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
-import com.finapp.feature.account.BuildConfig
 import com.finapp.feature.account.homepage.BalanceItemUiState
 import com.finapp.feature.account.homepage.CurrencyItemUiState
 import com.finapp.feature.common.R
@@ -39,6 +39,7 @@ sealed class AccountEditUiEvent {
 class AccountEditViewModel @AssistedInject constructor(
     private val accountRepository: AccountRepository,
     private val currencyRepository: CurrencyRepository,
+    private val accountIdProvider: AccountIdProvider,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -120,7 +121,7 @@ class AccountEditViewModel @AssistedInject constructor(
             } else {
                 accountRepository.updateAccount(
                     Account(
-                        BuildConfig.ACCOUNT_ID,
+                        accountIdProvider.get(),
                         _uiState.value.nameFieldState.text,
                         _uiState.value.balanceFieldState.text.toBigDecimal(),
                         _uiState.value.currencyFieldState.currency

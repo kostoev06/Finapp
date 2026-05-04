@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.finapp.core.data.impl"
+    namespace = "com.finapp.core.settings.impl"
 }
 
 dependencies {

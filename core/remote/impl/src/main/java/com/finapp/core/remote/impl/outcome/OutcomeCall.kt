@@ -28,7 +28,11 @@ internal class OutcomeCall<T>(
         })
     }
 
-    override fun execute(): Response<Outcome<T>> = throw NotImplementedError()
+    override fun execute(): Response<Outcome<T>> = try {
+        Response.success(proxy.execute().asRemoteResult())
+    } catch (t: Throwable) {
+        Response.success(Outcome.Exception(t))
+    }
     override fun clone(): Call<Outcome<T>> = OutcomeCall(proxy.clone())
     override fun request(): Request = proxy.request()
     override fun timeout(): Timeout = proxy.timeout()

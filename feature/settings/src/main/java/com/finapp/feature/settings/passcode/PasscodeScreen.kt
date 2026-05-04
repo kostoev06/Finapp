@@ -33,12 +33,15 @@ import com.finapp.feature.settings.passcode.component.PasscodeKeypad
 @Composable
 fun PasscodeRoute(
     viewModel: PasscodeViewModel = viewModel(),
+    initialMode: PasscodeMode,
     onBack: () -> Unit,
     onDone: () -> Unit,
     showBack: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) { viewModel.ensureMode(initialMode) }
 
     LaunchedEffect(state.finished) {
         if (state.finished) onDone()

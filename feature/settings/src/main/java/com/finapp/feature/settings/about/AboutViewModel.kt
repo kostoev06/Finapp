@@ -3,10 +3,10 @@ package com.finapp.feature.settings.about
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
+import com.finapp.feature.common.info.AppInfoProvider
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import javax.inject.Named
 
 data class AboutUiState(
     val versionName: String,
@@ -15,16 +15,14 @@ data class AboutUiState(
 )
 
 class AboutViewModel @AssistedInject constructor(
-    @Named("appVersionName") private val versionName: String,
-    @Named("appVersionCode") private val versionCode: Long,
-    @Named("appLastUpdateMillis") private val lastUpdateMillis: Long,
+    appInfo: AppInfoProvider,
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val uiState: AboutUiState = AboutUiState(
-        versionName = versionName,
-        versionCode = versionCode,
-        lastUpdateMillis = lastUpdateMillis
+        versionName = appInfo.versionName,
+        versionCode = appInfo.versionCode,
+        lastUpdateMillis = appInfo.lastUpdateMillis
     )
 
     @AssistedFactory
