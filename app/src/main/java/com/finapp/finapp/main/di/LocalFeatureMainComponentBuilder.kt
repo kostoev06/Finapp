@@ -1,4 +1,4 @@
-package com.finapp.finapp.theme.di
+package com.finapp.finapp.main.di
 
 import androidx.compose.runtime.staticCompositionLocalOf
 

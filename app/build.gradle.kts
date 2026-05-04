@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     id(libs.plugins.android.application.get().pluginId)
     `finapp-module-feature`
@@ -28,8 +25,6 @@ dependencies {
     implementation(project(":core:settings:impl"))
     implementation(project(":core:work"))
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.work.runtime.ktx)
     implementation(libs.androidx.appcompat)
 }
