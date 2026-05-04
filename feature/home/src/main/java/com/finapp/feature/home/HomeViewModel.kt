@@ -14,6 +14,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class HomeViewModel @AssistedInject constructor(
@@ -25,20 +27,23 @@ class HomeViewModel @AssistedInject constructor(
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     init {
-        viewModelScope.launch {
-            connectivity.online
-                .filter { it }
-                .collect {
-                    scheduler.scheduleOneShot()
-                }
+        // Подписка на сеть и прогрев кеша живут независимо: collect на connectivity никогда
+        // не возвращается, поэтому fetch'и нельзя ставить в тот же launch — они не выполнятся.
+        connectivity.online
+            .filter { it }
+            .onEach { scheduler.scheduleOneShot() }
+            .launchIn(viewModelScope)
 
+        viewModelScope.launch {
             accountRepository.fetchAccount().handleOutcome {
                 onSuccess {
                     accountRepository.insertLocalAccount(data)
                     currencyRepository.setCurrency(data.currency.code)
                 }
             }
+        }
 
+        viewModelScope.launch {
             categoryRepository.fetchCategories().handleOutcome {
                 onSuccess {
                     categoryRepository.insertAllLocalCategories(data)
