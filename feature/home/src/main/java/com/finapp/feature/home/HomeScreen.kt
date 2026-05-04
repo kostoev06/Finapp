@@ -14,21 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.finapp.feature.common.theme.GreenPrimary
-import com.finapp.feature.common.theme.GreenPrimaryLight
-import com.finapp.feature.home.di.LocalFeatureHomeComponentBuilder
 import com.finapp.feature.home.navigation.HomeNavigationDestination
 import com.finapp.feature.home.navigation.HomeNavigationGraph
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    viewModel: HomeViewModel = viewModel(factory = LocalFeatureHomeComponentBuilder.current.build().viewModelFactory()),
     modifier: Modifier = Modifier
 ) {
     val destinations =

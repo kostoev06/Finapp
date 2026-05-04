@@ -30,7 +30,6 @@ import com.finapp.feature.common.sound.LocalSoundPlayer
 import com.finapp.feature.common.theme.FinappTheme
 import com.finapp.feature.expenses.di.LocalFeatureExpensesComponentBuilder
 import com.finapp.feature.home.HomeScreen
-import com.finapp.feature.home.di.LocalFeatureHomeComponentBuilder
 import com.finapp.feature.income.di.LocalFeatureIncomeComponentBuilder
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
 import com.finapp.feature.settings.passcode.PasscodeMode
@@ -81,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     val navController = rememberNavController()
                     CompositionLocalProvider(
-                        LocalFeatureHomeComponentBuilder provides appComponent.featureHomeComponentBuilder(),
                         LocalFeatureAccountComponentBuilder provides appComponent.featureAccountComponentBuilder(),
                         LocalFeatureIncomeComponentBuilder provides appComponent.featureIncomeComponentBuilder(),
                         LocalFeatureExpensesComponentBuilder provides appComponent.featureExpensesComponentBuilder(),
