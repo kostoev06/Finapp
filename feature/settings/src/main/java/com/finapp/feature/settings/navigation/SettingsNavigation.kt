@@ -95,7 +95,8 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
     }
 }
 
-private fun PasscodeNavMode.toUiMode(): PasscodeMode = when (this) {
+@PublishedApi
+internal fun PasscodeNavMode.toUiMode(): PasscodeMode = when (this) {
     PasscodeNavMode.SETUP_NEW -> PasscodeMode.SetupNew
     PasscodeNavMode.VERIFY -> PasscodeMode.Verify
     PasscodeNavMode.DISABLE -> PasscodeMode.Disable

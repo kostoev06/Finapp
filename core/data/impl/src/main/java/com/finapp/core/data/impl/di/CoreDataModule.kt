@@ -15,7 +15,7 @@ import com.finapp.core.data.impl.repository.TransactionRepositoryImpl
 import dagger.Binds
 import dagger.Module
 
-@Module(includes = [SyncStatusDataStoreModule::class])
+@Module(includes = [SyncStatusDataStoreModule::class, CurrencyDataStoreModule::class])
 interface CoreDataModule {
     @Binds
     fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
