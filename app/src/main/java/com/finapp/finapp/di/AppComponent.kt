@@ -33,6 +33,7 @@ import javax.inject.Singleton
         WorkSupportModule::class,
         DataStoreModule::class,
         SoundModule::class,
+        PlatformModule::class,
         FeatureHomeComponent.InstallationModule::class,
         FeatureAccountComponent.InstallationModule::class,
         FeatureIncomeComponent.InstallationModule::class,

@@ -13,7 +13,7 @@ import com.finapp.core.settings.impl.repository.ThemeSettingsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 
-@Module
+@Module(includes = [SettingsDataStoresModule::class])
 interface CoreSettingsModule {
     @Binds
     fun bindCategoryRepository(impl: ThemeSettingsRepositoryImpl): ThemeSettingsRepository

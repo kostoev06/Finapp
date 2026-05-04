@@ -1,11 +1,12 @@
 package com.finapp.core.settings.impl.repository
 
-import android.content.Context
 import android.util.Base64
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.core.settings.impl.DataStoreKeys
+import com.finapp.core.settings.impl.di.PasscodeSettingsDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -17,9 +18,6 @@ import javax.crypto.spec.PBEKeySpec
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val STORE_NAME = "auth_settings"
-private val Context.passcodeDataStore by preferencesDataStore(STORE_NAME)
-
 private const val PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA256"
 private const val PBKDF2_ITERATIONS = 100_000
 private const val PBKDF2_KEY_LENGTH_BITS = 256
@@ -27,11 +25,11 @@ private const val SALT_LENGTH_BYTES = 16
 
 @Singleton
 class PasscodeRepositoryImpl @Inject constructor(
-    private val context: Context
+    @PasscodeSettingsDataStore private val dataStore: DataStore<Preferences>
 ) : PasscodeRepository {
 
     override val isSet: Flow<Boolean> =
-        context.passcodeDataStore.data.map { prefs ->
+        dataStore.data.map { prefs ->
             prefs[DataStoreKeys.PASSCODE_HASH] != null
         }
 
@@ -40,14 +38,14 @@ class PasscodeRepositoryImpl @Inject constructor(
             val s = ByteArray(SALT_LENGTH_BYTES).also { SecureRandom().nextBytes(it) }
             s to pbkdf2(plain, s)
         }
-        context.passcodeDataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs[DataStoreKeys.PASSCODE_SALT] = salt.encodeBase64()
             prefs[DataStoreKeys.PASSCODE_HASH] = hash.encodeBase64()
         }
     }
 
     override suspend fun verify(plain: String): Boolean = withContext(Dispatchers.Default) {
-        val prefs = context.passcodeDataStore.data.first()
+        val prefs = dataStore.data.first()
         val storedHash = prefs[DataStoreKeys.PASSCODE_HASH]?.decodeBase64() ?: return@withContext false
         val storedSalt = prefs[DataStoreKeys.PASSCODE_SALT]?.decodeBase64() ?: return@withContext false
         val computed = pbkdf2(plain, storedSalt)
@@ -55,7 +53,7 @@ class PasscodeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clear() {
-        context.passcodeDataStore.edit { prefs ->
+        dataStore.edit { prefs ->
             prefs.remove(DataStoreKeys.PASSCODE_HASH)
             prefs.remove(DataStoreKeys.PASSCODE_SALT)
         }

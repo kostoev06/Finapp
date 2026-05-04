@@ -1,19 +1,15 @@
 package com.finapp.feature.common.haptics
 
-import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.os.VibratorManager
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.finapp.core.settings.api.repository.HapticsSettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -37,12 +33,15 @@ interface HapticsPlayer {
 
 @Singleton
 class HapticsPlayerImpl @Inject constructor(
-    private val context: Context,
+    private val vibrator: Vibrator?,
     hapticsSettingsRepository: HapticsSettingsRepository
 ) : HapticsPlayer {
 
+    // Дефолт совпадает с дефолтом репозитория: пока DataStore не выдал первое значение,
+    // считаем хаптики включёнными. Окно гонки — миллисекунды от старта приложения до
+    // первого emit'а, что для UX-фидбэка приемлемо.
     @Volatile
-    private var enabled: Boolean = runBlocking { hapticsSettingsRepository.enabled.first() }
+    private var enabled: Boolean = true
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -50,16 +49,6 @@ class HapticsPlayerImpl @Inject constructor(
         hapticsSettingsRepository.enabled
             .onEach { enabled = it }
             .launchIn(scope)
-    }
-
-    private val vibrator: Vibrator? by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            (context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)
-                ?.defaultVibrator
-        } else {
-            @Suppress("DEPRECATION")
-            context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-        }
     }
 
     override fun play(effect: HapticEffect, ignoreSetting: Boolean) {
