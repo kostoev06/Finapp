@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":feature:tags"))
     implementation(project(":feature:settings"))
     implementation(project(":core:data:impl"))
+    implementation(project(":core:domain"))
     implementation(project(":core:remote:impl"))
     implementation(project(":core:database:impl"))
     implementation(project(":core:settings:impl"))

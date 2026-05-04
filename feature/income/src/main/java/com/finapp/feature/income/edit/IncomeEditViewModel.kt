@@ -4,15 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.finapp.core.common.outcome.Outcome
-import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Transaction
 import com.finapp.core.data.api.model.TransactionBrief
-import com.finapp.core.data.api.model.TransactionInfo
-import com.finapp.core.data.api.model.asTransactionInfo
-import com.finapp.core.data.api.repository.AccountRepository
-import com.finapp.core.data.api.repository.CategoryRepository
-import com.finapp.core.data.api.repository.TransactionRepository
+import com.finapp.core.domain.usecase.GetAccountUseCase
+import com.finapp.core.domain.usecase.GetCategoriesByTypeUseCase
+import com.finapp.core.domain.usecase.GetTransactionByIdUseCase
+import com.finapp.core.domain.usecase.SaveTransactionUseCase
 import com.finapp.feature.common.R
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.text.UiText
@@ -42,12 +39,14 @@ sealed class IncomeEditUiEvent {
 }
 
 class IncomeEditViewModel @AssistedInject constructor(
-    private val accountRepository: AccountRepository,
-    private val transactionRepository: TransactionRepository,
-    private val categoryRepository: CategoryRepository,
-    @Assisted savedStateHandle: SavedStateHandle
+    @Assisted savedStateHandle: SavedStateHandle,
+    private val getTransactionById: GetTransactionByIdUseCase,
+    private val getAccount: GetAccountUseCase,
+    private val getCategoriesByType: GetCategoriesByTypeUseCase,
+    private val saveTransaction: SaveTransactionUseCase
 ) : ViewModel() {
-    private val incomeId = savedStateHandle.toRoute<IncomeNavigationDestination.EditIncome>().incomeId
+    private val incomeId =
+        savedStateHandle.toRoute<IncomeNavigationDestination.EditIncome>().incomeId
 
     private val _uiState = MutableStateFlow(
         IncomeEditScreenUiState(
@@ -68,227 +67,113 @@ class IncomeEditViewModel @AssistedInject constructor(
     val events: SharedFlow<IncomeEditUiEvent> = _events.asSharedFlow()
 
     init {
-        if (incomeId != null) {
-            viewModelScope.launch {
-                transactionRepository.fetchTransactionById(incomeId)
-                    .handleOutcome {
-                        onSuccess {
-                            updateUiState(data)
-                            transactionRepository.insertSyncedLocalTransaction(data.asTransactionInfo())
-                        }
-                        onFailure {
-                            val localData = transactionRepository.getLocalTransactionById(incomeId)
-                            if (localData != null) {
-                                updateUiState(localData)
-                            }
-                            val (title, message) = outcome.toErrorTexts()
-                            _events.emit(IncomeEditUiEvent.ShowError(title, message))
-                        }
-                    }
-            }
-        }
+        if (incomeId != null) loadExisting(incomeId)
+        loadAccountAndCategories()
+    }
+
+    private fun loadExisting(id: Long) {
         viewModelScope.launch {
-            val accountName: String =
-                when (val accountOutcome = accountRepository.fetchAccount()) {
-                    is Outcome.Success -> accountOutcome.data.name
-                    else -> {
-                        _events.emit(
-                            IncomeEditUiEvent.ShowError(
-                                title = UiText.Resource(R.string.error),
-                                message = UiText.Resource(R.string.error_unknown)
-                            )
-                        )
-                        accountRepository.getLocalAccount()?.name ?: ""
-                    }
-                }
-            categoryRepository.fetchCategoriesByType(isIncome = true).handleOutcome {
-                onSuccess {
-                    _uiState.update {
-                        it.copy(
-                            accountFieldState = accountName,
-                            categoriesListState = data.map { category -> category.asCategoryUiState() }
-                                .toImmutableList()
-                        )
-                    }
-                }
-                onFailure {
-                    val localData = categoryRepository.getLocalCategoriesByType(isIncome = true)
-                    _uiState.update {
-                        it.copy(
-                            accountFieldState = accountName,
-                            categoriesListState = localData.map { category -> category.asCategoryUiState() }
-                                .toImmutableList()
-                        )
-                    }
-                }
+            val result = getTransactionById(id)
+            result.data?.let { applyTransaction(it) }
+            result.error?.let { failure ->
+                val (title, message) = failure.toErrorTexts()
+                _events.emit(IncomeEditUiEvent.ShowError(title, message))
             }
         }
     }
 
-    fun onAmountChange(new: String) {
+    private fun loadAccountAndCategories() {
         viewModelScope.launch {
+            val accountResult = getAccount()
+            val accountName = accountResult.data?.name.orEmpty()
+            if (accountResult.error != null) {
+                _events.emit(
+                    IncomeEditUiEvent.ShowError(
+                        title = UiText.Resource(R.string.error),
+                        message = UiText.Resource(R.string.error_unknown)
+                    )
+                )
+            }
+            val categoriesResult = getCategoriesByType(isIncome = true)
             _uiState.update {
-                it.copy(amountFieldState = new)
-            }
-        }
-    }
-
-    fun onCategoryClick() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(isCategoryDialogVisible = true)
-            }
-        }
-    }
-
-    fun onCategorySelect(categoryId: Long) {
-        viewModelScope.launch {
-            _uiState.update { state ->
-                val picked = state.categoriesListState.firstOrNull { it.id == categoryId }
-                    ?: return@update state
-
-                state.copy(
-                    currentCategoryState = picked,
-                    isCategoryDialogVisible = false
+                it.copy(
+                    accountFieldState = accountName,
+                    categoriesListState = categoriesResult.data
+                        .map { category -> category.asCategoryUiState() }
+                        .toImmutableList()
                 )
             }
         }
     }
 
-    fun onCancelDialog() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(isCategoryDialogVisible = false)
-            }
+    fun onAmountChange(new: String) {
+        _uiState.update { it.copy(amountFieldState = new) }
+    }
+
+    fun onCategoryClick() {
+        _uiState.update { it.copy(isCategoryDialogVisible = true) }
+    }
+
+    fun onCategorySelect(categoryId: Long) {
+        _uiState.update { state ->
+            val picked = state.categoriesListState.firstOrNull { it.id == categoryId }
+                ?: return@update state
+            state.copy(
+                currentCategoryState = picked,
+                isCategoryDialogVisible = false
+            )
         }
+    }
+
+    fun onCancelDialog() {
+        _uiState.update { it.copy(isCategoryDialogVisible = false) }
     }
 
     fun onChooseDate(date: LocalDate) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(dateState = date)
-            }
-        }
+        _uiState.update { it.copy(dateState = date) }
     }
 
     fun onChooseTime(time: LocalTime) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(timeState = time)
-            }
-        }
+        _uiState.update { it.copy(timeState = time) }
     }
 
     fun onCommentChange(new: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(commentFieldState = new)
-            }
-        }
+        _uiState.update { it.copy(commentFieldState = new) }
     }
 
     fun onSave() {
         viewModelScope.launch {
-            if (_uiState.value.amountFieldState.isEmpty()) {
+            val state = _uiState.value
+            if (state.amountFieldState.isEmpty()) {
                 _events.emit(
                     IncomeEditUiEvent.ShowError(
                         title = UiText.Resource(R.string.error),
                         message = UiText.Resource(R.string.error_invalid_amount)
                     )
                 )
-            } else {
-                val localDateTime = LocalDateTime.of(
-                    _uiState.value.dateState,
-                    _uiState.value.timeState
-                )
-                val accountData = accountRepository.getLocalAccount()
-
-                if (incomeId == null) {
-                    transactionRepository.createTransaction(
-                        TransactionBrief(
-                            id = null,
-                            categoryId = _uiState.value.currentCategoryState.id,
-                            amount = _uiState.value.amountFieldState.toBigDecimal(),
-                            transactionDate = localDateTime,
-                            comment = _uiState.value.commentFieldState
-                        )
-                    ).handleOutcome {
-                        onSuccess {
-                            transactionRepository.insertSyncedLocalTransaction(data)
-                            _events.emit(IncomeEditUiEvent.OnSaveSuccess)
-                        }
-                        onFailure {
-                            transactionRepository.insertUnsyncedLocalTransaction(
-                                TransactionInfo(
-                                    id = null,
-                                    accountId = accountData!!.id,
-                                    categoryId = _uiState.value.currentCategoryState.id,
-                                    amount = _uiState.value.amountFieldState.toBigDecimal(),
-                                    transactionDate = localDateTime,
-                                    comment = _uiState.value.commentFieldState,
-                                    createdAt = localDateTime,
-                                    updatedAt = localDateTime
-                                )
-                            )
-                            _events.emit(IncomeEditUiEvent.OnSaveSuccess)
-                            val (title, message) = outcome.toErrorTexts()
-                            _events.emit(IncomeEditUiEvent.ShowError(title, message))
-                        }
-                    }
-                } else {
-                    transactionRepository.updateTransaction(
-                        TransactionBrief(
-                            id = incomeId,
-                            categoryId = _uiState.value.currentCategoryState.id,
-                            amount = _uiState.value.amountFieldState.toBigDecimal(),
-                            transactionDate = localDateTime,
-                            comment = _uiState.value.commentFieldState
-                        )
-                    ).handleOutcome {
-                        onSuccess {
-                            transactionRepository.updateSyncedLocalTransaction(data.asTransactionInfo())
-                            _events.emit(IncomeEditUiEvent.OnSaveSuccess)
-                        }
-                        onFailure {
-                            if (transactionRepository.getSyncedLocalTransactionById(incomeId) != null) {
-                                transactionRepository.updateSyncedLocalTransaction(
-                                    TransactionInfo(
-                                        id = incomeId,
-                                        accountId = accountData!!.id,
-                                        categoryId = _uiState.value.currentCategoryState.id,
-                                        amount = _uiState.value.amountFieldState.toBigDecimal(),
-                                        transactionDate = localDateTime,
-                                        comment = _uiState.value.commentFieldState,
-                                        createdAt = localDateTime,
-                                        updatedAt = localDateTime
-                                    )
-                                )
-                            } else {
-                                transactionRepository.updateUnsyncedLocalTransaction(
-                                    TransactionInfo(
-                                        id = incomeId,
-                                        accountId = accountData!!.id,
-                                        categoryId = _uiState.value.currentCategoryState.id,
-                                        amount = _uiState.value.amountFieldState.toBigDecimal(),
-                                        transactionDate = localDateTime,
-                                        comment = _uiState.value.commentFieldState,
-                                        createdAt = localDateTime,
-                                        updatedAt = localDateTime
-                                    )
-                                )
-                            }
-
-                            _events.emit(IncomeEditUiEvent.OnSaveSuccess)
-                            val (title, message) = outcome.toErrorTexts()
-                            _events.emit(IncomeEditUiEvent.ShowError(title, message))
-                        }
-                    }
+                return@launch
+            }
+            val brief = TransactionBrief(
+                id = incomeId,
+                categoryId = state.currentCategoryState.id,
+                amount = state.amountFieldState.toBigDecimal(),
+                transactionDate = LocalDateTime.of(state.dateState, state.timeState),
+                comment = state.commentFieldState
+            )
+            when (val result = saveTransaction(brief)) {
+                is SaveTransactionUseCase.Result.Synced -> {
+                    _events.emit(IncomeEditUiEvent.OnSaveSuccess)
+                }
+                is SaveTransactionUseCase.Result.Offline -> {
+                    _events.emit(IncomeEditUiEvent.OnSaveSuccess)
+                    val (title, message) = result.error.toErrorTexts()
+                    _events.emit(IncomeEditUiEvent.ShowError(title, message))
                 }
             }
         }
     }
 
-    private fun updateUiState(data: Transaction) {
+    private fun applyTransaction(data: Transaction) {
         _uiState.update {
             it.copy(
                 currentCategoryState = data.category.asCategoryUiState(),

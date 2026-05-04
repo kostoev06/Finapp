@@ -7,8 +7,8 @@ import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Account
 import com.finapp.core.data.api.model.CurrencyCode
 import com.finapp.core.data.api.repository.AccountIdProvider
-import com.finapp.core.data.api.repository.AccountRepository
-import com.finapp.core.data.api.repository.CurrencyRepository
+import com.finapp.core.domain.usecase.GetAccountUseCase
+import com.finapp.core.domain.usecase.UpdateAccountUseCase
 import com.finapp.feature.account.homepage.BalanceItemUiState
 import com.finapp.feature.account.homepage.CurrencyItemUiState
 import com.finapp.feature.common.R
@@ -37,8 +37,8 @@ sealed class AccountEditUiEvent {
  * ViewModel для экрана изменения счета.
  */
 class AccountEditViewModel @AssistedInject constructor(
-    private val accountRepository: AccountRepository,
-    private val currencyRepository: CurrencyRepository,
+    private val getAccount: GetAccountUseCase,
+    private val updateAccount: UpdateAccountUseCase,
     private val accountIdProvider: AccountIdProvider,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -51,62 +51,38 @@ class AccountEditViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            accountRepository.fetchAccount()
-                .handleOutcome {
-                    onSuccess {
-                        updateUiState(data)
-                        accountRepository.insertLocalAccount(data)
-                    }
-                    onFailure {
-                        accountRepository.getLocalAccount()?.let { updateUiState(it) }
-                        val (title, message) = outcome.toErrorTexts()
-                        _events.emit(AccountEditUiEvent.ShowError(title, message))
-                    }
-                }
+            val result = getAccount()
+            result.data?.let { updateUiState(it) }
+            result.error?.let { failure ->
+                val (title, message) = failure.toErrorTexts()
+                _events.emit(AccountEditUiEvent.ShowError(title, message))
+            }
         }
     }
 
     fun onNameChange(new: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(nameFieldState = it.nameFieldState.copy(text = new))
-            }
-        }
+        _uiState.update { it.copy(nameFieldState = it.nameFieldState.copy(text = new)) }
     }
 
     fun onBalanceChange(new: String) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(balanceFieldState = it.balanceFieldState.copy(text = new))
-            }
-        }
+        _uiState.update { it.copy(balanceFieldState = it.balanceFieldState.copy(text = new)) }
     }
 
     fun onCurrencyClick() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(isCurrencySheetVisible = true)
-            }
-        }
+        _uiState.update { it.copy(isCurrencySheetVisible = true) }
     }
 
     fun onCurrencySelect(currency: CurrencyCode) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    currencyFieldState = it.currencyFieldState.copy(currency = currency),
-                    isCurrencySheetVisible = false
-                )
-            }
+        _uiState.update {
+            it.copy(
+                currencyFieldState = it.currencyFieldState.copy(currency = currency),
+                isCurrencySheetVisible = false
+            )
         }
     }
 
     fun onCancelSheet() {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(isCurrencySheetVisible = false)
-            }
-        }
+        _uiState.update { it.copy(isCurrencySheetVisible = false) }
     }
 
     fun onSave() {
@@ -118,34 +94,33 @@ class AccountEditViewModel @AssistedInject constructor(
                         message = UiText.Resource(R.string.error_invalid_amount)
                     )
                 )
-            } else {
-                accountRepository.updateAccount(
-                    Account(
-                        accountIdProvider.get(),
-                        _uiState.value.nameFieldState.text,
-                        _uiState.value.balanceFieldState.text.toBigDecimal(),
-                        _uiState.value.currencyFieldState.currency
-                    )
-                ).handleOutcome {
-                    onSuccess {
-                        _events.emit(AccountEditUiEvent.OnSaveSuccess)
-                        currencyRepository.setCurrency(_uiState.value.currencyFieldState.currency.code)
-                    }
-                    onFailure {
-                        val (title, message) = outcome.toErrorTexts()
-                        _events.emit(AccountEditUiEvent.ShowError(title, message))
-                    }
+                return@launch
+            }
+            val state = _uiState.value
+            updateAccount(
+                Account(
+                    id = accountIdProvider.get(),
+                    name = state.nameFieldState.text,
+                    balance = state.balanceFieldState.text.toBigDecimal(),
+                    currency = state.currencyFieldState.currency
+                )
+            ).handleOutcome {
+                onSuccess {
+                    _events.emit(AccountEditUiEvent.OnSaveSuccess)
+                }
+                onFailure {
+                    val (title, message) = outcome.toErrorTexts()
+                    _events.emit(AccountEditUiEvent.ShowError(title, message))
                 }
             }
         }
     }
 
     private fun updateUiState(data: Account) {
-        val balance = data.balance.toPlainString()
         _uiState.update {
             it.copy(
                 nameFieldState = NameFieldUiState(data.name),
-                balanceFieldState = BalanceFieldUiState(balance),
+                balanceFieldState = BalanceFieldUiState(data.balance.toPlainString()),
                 currencyFieldState = CurrencyFieldUiState(data.currency)
             )
         }
