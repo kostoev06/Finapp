@@ -3,9 +3,8 @@ package com.finapp.feature.tags
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Category
-import com.finapp.core.data.api.repository.CategoryRepository
+import com.finapp.core.domain.usecase.GetAllCategoriesUseCase
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
  * ViewModel для экрана статей.
  */
 class TagsViewModel @AssistedInject constructor(
-    private val categoryRepository: CategoryRepository,
+    private val getAllCategories: GetAllCategoriesUseCase,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -34,15 +33,7 @@ class TagsViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            categoryRepository.fetchCategories().handleOutcome {
-                onSuccess {
-                    updateUiState(data)
-                    categoryRepository.insertAllLocalCategories(data)
-                }
-                onFailure {
-                    updateUiState(categoryRepository.getAllLocalCategories())
-                }
-            }
+            updateUiState(getAllCategories().data)
         }
     }
 
@@ -73,13 +64,10 @@ class TagsViewModel @AssistedInject constructor(
         allItems = uiList
 
         _uiState.update {
-            it.copy(
-                items = uiList
-            )
+            it.copy(items = uiList)
         }
     }
 
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<TagsViewModel>
-
 }
