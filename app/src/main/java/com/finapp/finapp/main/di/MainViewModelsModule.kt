@@ -1,10 +1,10 @@
-package com.finapp.finapp.theme.di
+package com.finapp.finapp.main.di
 
 import androidx.lifecycle.ViewModel
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.di.ViewModelKey
 import com.finapp.finapp.lock.LockViewModel
-import com.finapp.finapp.theme.AppThemeViewModel
+import com.finapp.finapp.main.AppThemeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,4 +1,4 @@
-package com.finapp.finapp.theme.di
+package com.finapp.finapp.main.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

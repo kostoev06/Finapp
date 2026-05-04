@@ -15,7 +15,7 @@ import com.finapp.core.work.transaction.di.WorkSupportModule
 import com.finapp.feature.common.haptics.HapticsPlayer
 import com.finapp.feature.common.sound.SoundPlayer
 import com.finapp.feature.settings.di.FeatureSettingsComponent
-import com.finapp.finapp.theme.di.FeatureMainComponent
+import com.finapp.finapp.main.di.FeatureMainComponent
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

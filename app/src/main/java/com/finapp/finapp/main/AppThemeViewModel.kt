@@ -1,4 +1,4 @@
-package com.finapp.finapp.theme
+package com.finapp.finapp.main
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

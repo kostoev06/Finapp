@@ -37,8 +37,8 @@ import com.finapp.feature.settings.passcode.PasscodeRoute
 import com.finapp.feature.tags.di.LocalFeatureTagsComponentBuilder
 import com.finapp.finapp.lock.LockState
 import com.finapp.finapp.lock.LockViewModel
-import com.finapp.finapp.theme.AppThemeViewModel
-import com.finapp.finapp.theme.di.LocalFeatureMainComponentBuilder
+import com.finapp.finapp.main.AppThemeViewModel
+import com.finapp.finapp.main.di.LocalFeatureMainComponentBuilder
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

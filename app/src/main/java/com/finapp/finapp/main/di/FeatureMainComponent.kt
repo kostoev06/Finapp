@@ -1,5 +1,4 @@
-package com.finapp.finapp.theme.di
-
+package com.finapp.finapp.main.di
 
 import androidx.lifecycle.ViewModelProvider
 import dagger.Module

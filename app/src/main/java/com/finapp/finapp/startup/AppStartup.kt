@@ -1,9 +1,8 @@
 package com.finapp.finapp.startup
 
-import com.finapp.core.common.outcome.handleOutcome
-import com.finapp.core.data.api.repository.AccountRepository
-import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
+import com.finapp.core.domain.usecase.GetAccountUseCase
+import com.finapp.core.domain.usecase.GetAllCategoriesUseCase
 import com.finapp.core.work.transaction.ConnectivityObserver
 import com.finapp.core.work.transaction.SyncTransactionScheduler
 import kotlinx.coroutines.CoroutineScope
@@ -30,8 +29,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class AppStartup @Inject constructor(
-    private val accountRepository: AccountRepository,
-    private val categoryRepository: CategoryRepository,
+    private val getAccount: GetAccountUseCase,
+    private val getAllCategories: GetAllCategoriesUseCase,
     private val currencyRepository: CurrencyRepository,
     private val connectivity: ConnectivityObserver,
     private val scheduler: SyncTransactionScheduler
@@ -46,19 +45,15 @@ class AppStartup @Inject constructor(
             .onEach { scheduler.scheduleOneShot() }
             .launchIn(scope)
 
+        // GetAccountUseCase сам зеркалит свежий аккаунт в локальный кеш на success;
+        // здесь дополнительно распространяем код валюты в CurrencyRepository, чтобы
+        // экраны Expenses/Income/Account сразу подхватили актуальный знак.
         scope.launch {
-            accountRepository.fetchAccount().handleOutcome {
-                onSuccess {
-                    accountRepository.insertLocalAccount(data)
-                    currencyRepository.setCurrency(data.currency.code)
-                }
-            }
+            getAccount().data?.let { currencyRepository.setCurrency(it.currency.code) }
         }
 
-        scope.launch {
-            categoryRepository.fetchCategories().handleOutcome {
-                onSuccess { categoryRepository.insertAllLocalCategories(data) }
-            }
-        }
+        // GetAllCategoriesUseCase сам зеркалит категории в локальный кеш — нам ничего
+        // дополнительно делать не нужно, просто запускаем.
+        scope.launch { getAllCategories() }
     }
 }
