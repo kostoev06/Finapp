@@ -5,8 +5,8 @@ import com.finapp.core.common.outcome.transform
 import com.finapp.core.data.api.model.Transaction
 import com.finapp.core.data.api.model.TransactionBrief
 import com.finapp.core.data.api.model.TransactionInfo
+import com.finapp.core.data.api.repository.AccountIdProvider
 import com.finapp.core.data.api.repository.TransactionRepository
-import com.finapp.core.data.impl.BuildConfig
 import com.finapp.core.data.impl.model.asTransaction
 import com.finapp.core.data.impl.model.asTransactionEntity
 import com.finapp.core.data.impl.model.asTransactionInfo
@@ -22,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class TransactionRepositoryImpl @Inject constructor(
     private val transactionRemoteSource: TransactionRemoteSource,
-    private val transactionLocalSource: TransactionLocalSource
+    private val transactionLocalSource: TransactionLocalSource,
+    private val accountIdProvider: AccountIdProvider
 ) : TransactionRepository {
 
     override suspend fun fetchTransactionsByPeriod(
@@ -31,7 +32,7 @@ class TransactionRepositoryImpl @Inject constructor(
     ): Outcome<List<Transaction>> {
         return transactionRemoteSource
             .fetchTransactionsByPeriod(
-                BuildConfig.ACCOUNT_ID,
+                accountIdProvider.get(),
                 startDate,
                 endDate
             )
@@ -44,7 +45,7 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionBrief: TransactionBrief
     ): Outcome<TransactionInfo> {
         return transactionRemoteSource.createTransaction(
-            transactionBrief.asTransactionRequest(BuildConfig.ACCOUNT_ID)
+            transactionBrief.asTransactionRequest(accountIdProvider.get())
         ).transform { it.asTransactionInfo() }
     }
 
@@ -52,7 +53,7 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionBrief: TransactionBrief
     ): Outcome<Transaction> {
         return transactionRemoteSource.updateTransaction(
-            transactionBrief.id!!, transactionBrief.asTransactionRequest(BuildConfig.ACCOUNT_ID)
+            transactionBrief.id!!, transactionBrief.asTransactionRequest(accountIdProvider.get())
         ).transform { it.asTransaction() }
     }
 

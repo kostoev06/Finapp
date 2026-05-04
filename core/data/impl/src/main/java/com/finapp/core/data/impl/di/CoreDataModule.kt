@@ -1,10 +1,12 @@
 package com.finapp.core.data.impl.di
 
+import com.finapp.core.data.api.repository.AccountIdProvider
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.core.data.impl.repository.AccountRepositoryImpl
+import com.finapp.core.data.impl.repository.BuildConfigAccountIdProvider
 import com.finapp.core.data.impl.repository.CategoryRepositoryImpl
 import com.finapp.core.data.impl.repository.CurrencyRepositoryImpl
 import com.finapp.core.data.impl.repository.TransactionRepositoryImpl
@@ -25,4 +27,6 @@ interface CoreDataModule {
     @Binds
     fun bindTransactionRepository(impl: TransactionRepositoryImpl): TransactionRepository
 
+    @Binds
+    fun bindAccountIdProvider(impl: BuildConfigAccountIdProvider): AccountIdProvider
 }
