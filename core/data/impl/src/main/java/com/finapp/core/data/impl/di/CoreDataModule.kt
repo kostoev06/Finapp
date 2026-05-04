@@ -4,16 +4,18 @@ import com.finapp.core.data.api.repository.AccountIdProvider
 import com.finapp.core.data.api.repository.AccountRepository
 import com.finapp.core.data.api.repository.CategoryRepository
 import com.finapp.core.data.api.repository.CurrencyRepository
+import com.finapp.core.data.api.repository.SyncStatusRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.core.data.impl.repository.AccountRepositoryImpl
 import com.finapp.core.data.impl.repository.BuildConfigAccountIdProvider
 import com.finapp.core.data.impl.repository.CategoryRepositoryImpl
 import com.finapp.core.data.impl.repository.CurrencyRepositoryImpl
+import com.finapp.core.data.impl.repository.SyncStatusRepositoryImpl
 import com.finapp.core.data.impl.repository.TransactionRepositoryImpl
 import dagger.Binds
 import dagger.Module
 
-@Module
+@Module(includes = [SyncStatusDataStoreModule::class])
 interface CoreDataModule {
     @Binds
     fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
@@ -29,4 +31,7 @@ interface CoreDataModule {
 
     @Binds
     fun bindAccountIdProvider(impl: BuildConfigAccountIdProvider): AccountIdProvider
+
+    @Binds
+    fun bindSyncStatusRepository(impl: SyncStatusRepositoryImpl): SyncStatusRepository
 }

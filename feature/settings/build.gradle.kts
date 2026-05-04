@@ -11,10 +11,8 @@ android {
 
 dependencies {
     implementation(project(":feature:common"))
-    implementation(project(":core:settings:impl"))
+    implementation(project(":core:settings:api"))
     implementation(project(":core:data:api"))
     implementation(project(":core:work"))
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.appcompat)
 }

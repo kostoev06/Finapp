@@ -1,8 +1,5 @@
 package com.finapp.feature.account.homepage
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +7,7 @@ import com.finapp.core.common.outcome.handleOutcome
 import com.finapp.core.data.api.model.Account
 import com.finapp.core.data.api.model.asTransactionInfo
 import com.finapp.core.data.api.repository.AccountRepository
+import com.finapp.core.data.api.repository.SyncStatusRepository
 import com.finapp.core.data.api.repository.TransactionRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.common.text.UiText
@@ -19,14 +17,15 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -42,17 +41,13 @@ sealed class AccountUiEvent {
     data class ShowError(val title: UiText, val message: UiText) : AccountUiEvent()
 }
 
-private object Keys {
-    val LAST_SYNC = longPreferencesKey("last_sync")
-}
-
 /**
  * ViewModel для экрана счета.
  */
 class AccountViewModel @AssistedInject constructor(
-    private val dataStore: DataStore<Preferences>,
     private val accountRepository: AccountRepository,
     private val transactionRepository: TransactionRepository,
+    syncStatusRepository: SyncStatusRepository,
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -62,22 +57,15 @@ class AccountViewModel @AssistedInject constructor(
     private val _events = MutableSharedFlow<AccountUiEvent>()
     val events: SharedFlow<AccountUiEvent> = _events.asSharedFlow()
 
-    private val lastSyncInstant: Flow<Instant> = dataStore.data
-        .map { prefs -> prefs[Keys.LAST_SYNC] ?: 0L }
-        .map { epochSeconds -> Instant.ofEpochSecond(epochSeconds) }
-
-    private val lastSyncTextFlow: Flow<String> = lastSyncInstant.map { instant ->
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
-            .withZone(ZoneId.systemDefault())
-        formatter.format(instant)
-    }
+    private val lastSyncFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        .withZone(ZoneId.systemDefault())
 
     init {
-        viewModelScope.launch {
-            lastSyncTextFlow.collect { text ->
-                _uiState.update { it.copy(lastSyncTextState = text) }
-            }
-        }
+        // null = синхронизаций ещё не было — оставляем пустую строку, а не «01.01.1970 …».
+        syncStatusRepository.lastSyncEpoch
+            .map { epoch -> epoch?.let { lastSyncFormatter.format(Instant.ofEpochSecond(it)) }.orEmpty() }
+            .onEach { text -> _uiState.update { it.copy(lastSyncTextState = text) } }
+            .launchIn(viewModelScope)
         loadAccount()
     }
 

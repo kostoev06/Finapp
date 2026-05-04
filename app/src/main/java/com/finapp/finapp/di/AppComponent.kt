@@ -2,7 +2,6 @@ package com.finapp.finapp.di
 
 import android.content.Context
 import com.finapp.core.data.impl.di.CoreDataModule
-import com.finapp.core.data.impl.di.DataStoreModule
 import com.finapp.core.database.impl.di.CoreDatabaseModule
 import com.finapp.core.remote.impl.di.CoreRemoteModule
 import com.finapp.core.settings.impl.di.CoreSettingsModule
@@ -31,7 +30,6 @@ import javax.inject.Singleton
         CoreDatabaseModule::class,
         CoreSettingsModule::class,
         WorkSupportModule::class,
-        DataStoreModule::class,
         SoundModule::class,
         PlatformModule::class,
         FeatureHomeComponent.InstallationModule::class,
