@@ -3,12 +3,9 @@ package com.finapp.feature.settings.passcode
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
 import com.finapp.core.settings.api.repository.PasscodeRepository
 import com.finapp.feature.common.di.ViewModelAssistedFactory
 import com.finapp.feature.settings.R
-import com.finapp.feature.settings.navigation.PasscodeNavMode
-import com.finapp.feature.settings.navigation.SettingsNavigationDestination
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,17 +20,24 @@ class PasscodeViewModel @AssistedInject constructor(
     @Assisted savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // При входе через NavHost берём режим из nav-аргумента; если VM создаётся вне навигации
-    // (например, экран блокировки на старте приложения) — по умолчанию Verify.
-    private val initialMode: PasscodeMode =
-        runCatching {
-            savedStateHandle.toRoute<SettingsNavigationDestination.Passcode>().mode.toUiMode()
-        }.getOrDefault(PasscodeMode.Verify)
-
-    private val _uiState = MutableStateFlow(PasscodeUiState(mode = initialMode))
+    // Стартовый режим — Verify; Route однократно вызовет [ensureMode] и установит нужный.
+    // Так VM не дёргает nav-route и не зависит от того, как создаётся (через NavHost
+    // или из MainActivity для экрана блокировки).
+    private val _uiState = MutableStateFlow(PasscodeUiState(mode = PasscodeMode.Verify))
     val uiState: StateFlow<PasscodeUiState> = _uiState.asStateFlow()
 
+    private var modeInitialized = false
     private var setupBuffer: String = ""
+
+    /**
+     * Выставляет начальный режим один раз за жизнь VM. Повторные вызовы игнорируются —
+     * иначе при поворотах/рекомпозициях экран бы скакал между режимами SetupNew/SetupConfirm.
+     */
+    fun ensureMode(mode: PasscodeMode) {
+        if (modeInitialized) return
+        modeInitialized = true
+        _uiState.update { it.copy(mode = mode) }
+    }
 
     fun onDigit(digit: Char) {
         val current = _uiState.value
@@ -101,10 +105,4 @@ class PasscodeViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<PasscodeViewModel>
-}
-
-private fun PasscodeNavMode.toUiMode(): PasscodeMode = when (this) {
-    PasscodeNavMode.SETUP_NEW -> PasscodeMode.SetupNew
-    PasscodeNavMode.VERIFY -> PasscodeMode.Verify
-    PasscodeNavMode.DISABLE -> PasscodeMode.Disable
 }

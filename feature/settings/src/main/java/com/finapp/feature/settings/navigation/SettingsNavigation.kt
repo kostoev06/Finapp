@@ -5,12 +5,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.finapp.feature.settings.BrandColorPickerRoute
 import com.finapp.feature.settings.LanguagePickerRoute
 import com.finapp.feature.settings.SettingsRoute
 import com.finapp.feature.settings.about.AboutRoute
 import com.finapp.feature.settings.di.LocalFeatureSettingsComponentBuilder
 import com.finapp.feature.settings.haptics.HapticsRoute
+import com.finapp.feature.settings.passcode.PasscodeMode
 import com.finapp.feature.settings.passcode.PasscodeRoute
 import com.finapp.feature.settings.sound.SoundRoute
 import com.finapp.feature.settings.sync.SyncRoute
@@ -34,11 +36,13 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onBack = { navController.popBackStack() },
         )
     }
-    composable<SettingsNavigationDestination.Passcode> {
+    composable<SettingsNavigationDestination.Passcode> { entry ->
+        val args = entry.toRoute<SettingsNavigationDestination.Passcode>()
         val settingsComponentBuilder = LocalFeatureSettingsComponentBuilder.current
         val settingsComponent = remember { settingsComponentBuilder.build() }
         PasscodeRoute(
             viewModel = viewModel(factory = settingsComponent.viewModelFactory()),
+            initialMode = args.mode.toUiMode(),
             onBack = { navController.popBackStack() },
             onDone = { navController.popBackStack() }
         )
@@ -89,4 +93,10 @@ inline fun <reified T : Any> NavGraphBuilder.settingsNavigation(
             onOpenHaptics = { navController.navigate(SettingsNavigationDestination.Haptics) }
         )
     }
+}
+
+private fun PasscodeNavMode.toUiMode(): PasscodeMode = when (this) {
+    PasscodeNavMode.SETUP_NEW -> PasscodeMode.SetupNew
+    PasscodeNavMode.VERIFY -> PasscodeMode.Verify
+    PasscodeNavMode.DISABLE -> PasscodeMode.Disable
 }
